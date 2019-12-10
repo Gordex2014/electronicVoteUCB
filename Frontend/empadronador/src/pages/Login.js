@@ -36,7 +36,6 @@ export default class Login extends Component {
       .then(res => {
         alert("Ha ingresado con éxito");
         const token = res.data.body;
-        console.log(token)
         localStorage.setItem("jwtToken", token);
         setAuthorizationToken(token);
         this.setState({ redirect: true });

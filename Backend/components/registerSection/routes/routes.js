@@ -67,8 +67,7 @@ router.post("/login", (req, res) => {
           401,
           "Usuario no autorizado"
         );
-      }
-      if (profile.message) {
+      } else if (profile.message) {
         response.error(
           req,
           res,
@@ -78,7 +77,7 @@ router.post("/login", (req, res) => {
         );
       } else {
         const sendToken = jwt.sign({ profile }, config.secretKey, {
-          expiresIn: "2m"
+          expiresIn: "10m"
         });
         response.success(req, res, sendToken, 200);
       }

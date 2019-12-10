@@ -37,28 +37,51 @@ export default class Dashboard extends Component {
             </div>
           </div>
         </div>
-        <div className="col-5">
-          <div className="col">
-            <div className="card mt-4">
-              <div className="card-body">
-                <h4 className="card-title">
-                  Nombre: {this.state.name} {this.state.lastname}
-                </h4>
+        <div className="row mt-4">
+          <div className="col-6">
+            <div className="container">
+              <div className="col">
+                <div className="card mt-4">
+                  <div className="card-body">
+                    <h4 className="card-title">
+                      Nombre: {this.state.name} {this.state.lastname}
+                    </h4>
+                  </div>
+                  <ul className="list-group">
+                    <li className="list-group-item">
+                      Organizaci&oacute;n: {this.state.organization}
+                    </li>
+                    <li className="list-group-item">
+                      Nombre de usuario: {this.state.username}
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <ul className="list-group">
-                <li className="list-group-item">
-                  Organizaci&oacute;n: {this.state.organization}
-                </li>
-                <li className="list-group-item">
-                  Nombre de usuario: {this.state.username}
-                </li>
-              </ul>
             </div>
           </div>
-        </div>
-
-        <div className="col-7">
-
+          <div className="col-6">
+            <div className="container">
+              <div className="col-6 offset-3">
+                <Link to="/register" className="btn btn-secondary btn-block mt-5 mb-5">
+                  Empadronar votante
+                </Link>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <div className="btn btn-secondary btn-block mt-5 mb-5">
+                  Modificar par&aacute;metros de votante
+                </div>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <div className="btn btn-secondary btn-block mt-5 mb-5">
+                  Depurar votante
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
