@@ -108,6 +108,40 @@ router.post("/registervoter", verifyToken, validateToken, (req, res) => {
     });
 });
 
+router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
+  const { name, lastname, ci, city, location, oldCi } = req.body; //TODO: add fingerprint
+  const modifiedVoter = { name, lastname, ci, city, location, oldCi };
+  registerController
+    .modifyVoter(modifiedVoter)
+    .then(info => {
+      if (!info.message) {
+        response.success(req, res, "Votante modificado correctamente", 204);
+      } else {
+        response.success(req, res, info.message, info.status);
+      }
+    })
+    .catch(e => {
+      response.error(req, res, "Error inesperado", 500, e);
+    });
+});
+
+router.put("/registervoter", verifyToken, validateToken, (req, res) => {
+  const { oldCi } = req.body; //TODO: add fingerprint
+  const oldVoter = { oldCi };
+  registerController
+    .deleteVoter(oldVoter)
+    .then(info => {
+      if (!info.message) {
+        response.success(req, res, "Votante eliminado correctamente", 204);
+      } else {
+        response.success(req, res, info.message, info.status);
+      }
+    })
+    .catch(e => {
+      response.error(req, res, "Error inesperado", 500, e);
+    });
+});
+
 router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
   const { ci } = req.body;
   console.log(req.body.asd);
@@ -122,8 +156,7 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
           400,
           "No se ha encontrado al votante por ci"
         );
-      }
-      if (!info.ci) {
+      } else if (!info.ci) {
         response.error(req, res, info.message, info.status, info.message);
       } else {
         response.success(req, res, info, 200);

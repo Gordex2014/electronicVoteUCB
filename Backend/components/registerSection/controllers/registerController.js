@@ -62,12 +62,9 @@ function addVoter(voterParams) {
   }
 
   // Ingresar la imagen como archivo al servidor
-
   imageRoute = path.join(process.cwd(),`/public/votersPhotos/${ci}.jpg`)
   imageDataURI.outputFile(dataUri, imageRoute)
     .then(res => console.log(res))
-
-
 
   // Ingreso a base de datos
   let newVoter = {
@@ -84,6 +81,92 @@ function addVoter(voterParams) {
 
   // Interacción con la base de datos
   return voterStore.add(newVoter);
+}
+
+//Función para modificar al votante
+function modifyVoter(voterParams) {
+  const { name, lastname, ci, city, location, oldCi } = voterParams;
+  let message, status;
+  let retObject = { message, status };
+  // Revisión de cumplimiento de parámetros ingresados, con sus respectivas respuestas
+  if (!name) {
+    message = "No se introdujo ningún nombre";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if (!lastname) {
+    message = "No se introdujo ningún apellido";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if (!ci) {
+    message = "No se introdujo ningún CI";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  const ciNumber = Number(ci);
+  if (!Number.isInteger(ciNumber)) {
+    message = "Lo que se adjuntó en el campo de CI no es un número";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if (!city) {
+    message = "No se introdujo ninguna ciudad";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if (!location) {
+    message = "No se introdujo ningún recinto de voto";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if(!oldCi){
+    message = "No se tienen ningún dato de un ci anterior";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+
+  // Ingreso a base de datos
+  let modifiedVoter = {
+    name,
+    lastname,
+    ci: ciNumber,
+    city,
+    location,
+    oldCi
+  };
+
+  // Interacción con la base de datos
+  return voterStore.modify(modifiedVoter);
+}
+
+// Función para eliminar al votante del padrón
+function deleteVoter(voterParams) {
+  const { oldCi } = voterParams;
+  let message, status;
+  let retObject = { message, status };
+  // Revisión de cumplimiento de parámetros ingresados, con sus respectivas respuestas
+  if(!oldCi){
+    message = "No se tienen ningún dato de un ci anterior";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+
+  // Ingreso a base de datos
+  let modifiedVoter = {
+    oldCi
+  };
+
+  // Interacción con la base de datos
+  return voterStore.delete(modifiedVoter);
 }
 
 function addProfile(profileParams) {
@@ -185,4 +268,6 @@ module.exports = {
   addProfile,
   authenticateProfile,
   getVoterPanel,
+  modifyVoter,
+  deleteVoter,
 };
