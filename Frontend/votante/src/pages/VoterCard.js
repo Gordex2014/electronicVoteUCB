@@ -9,12 +9,14 @@ import isTokenValid from "../utils/isTokenValid";
 import persona from "../images/incognito.png";
 import errorIcon from "../images/error-icon.png";
 import checkIcon from "../images/check-icon.png";
+import config from "../utils/config";
 
 export default class voterCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ci: null,
+      imgUrl: "",
       tokenExpired: isTokenValid(localStorage.jwtToken)
     };
   }
@@ -27,8 +29,16 @@ export default class voterCard extends Component {
       .then(response => {
         if (response.data.body) {
           this.setState(response.data.body);
+          if (this.state.imgLocation === undefined) {
+            this.setState({ imgUrl: '' });
+          } else {
+            const imageUrl = `${config.serverUrl}/static/votersPhotos/${this.state.ci}.jpg`;
+            this.setState({ imgUrl: imageUrl });
+          }
         }
-      });
+      }).catch(e => {
+        alert("No se encuentra el votante");
+      });;
   }
 
   checkCi() {
@@ -65,7 +75,8 @@ export default class voterCard extends Component {
               <div className="card mt-4">
                 <img
                   className="card-img-top"
-                  src={persona}
+                  src={this.state.imgUrl || persona}
+                  width="300px"
                   alt="Foto persona"
                 />
                 <div className="card-body">

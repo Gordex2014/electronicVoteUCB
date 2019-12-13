@@ -92,8 +92,8 @@ router.post("/login", (req, res) => {
  ***********************************************************************************/
 
 router.post("/registervoter", verifyToken, validateToken, (req, res) => {
-  const { name, lastname, ci, city, location } = req.body; //TODO: add photo and fingerprint
-  const newVoter = { name, lastname, ci, city, location };
+  const { name, lastname, ci, city, location, dataUri } = req.body; //TODO: add photo and fingerprint
+  const newVoter = { name, lastname, ci, city, location, dataUri };
   registerController
     .addVoter(newVoter)
     .then(info => {

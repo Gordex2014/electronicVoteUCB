@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
+import Camera from "react-html5-camera-photo";
+import "react-html5-camera-photo/build/css/index.css";
 
 import Navbar from "../components/Navbar";
 import isTokenValid from "../utils/isTokenValid";
+import ImagePreview from "../utils/ImagePreview";
 
 export default class Register extends Component {
   constructor() {
@@ -15,7 +18,9 @@ export default class Register extends Component {
       ci: "",
       city: "",
       location: "",
-      redirect: false
+      redirect: false,
+      dataUri: "",
+      isFullscreen: false
     };
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeLastname = this.handleChangeLastname.bind(this);
@@ -23,6 +28,9 @@ export default class Register extends Component {
     this.handleChangeCity = this.handleChangeCity.bind(this);
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTakePhotoAnimationDone = this.handleTakePhotoAnimationDone.bind(
+      this
+    );
   }
 
   handleChangeName(event) {
@@ -48,16 +56,22 @@ export default class Register extends Component {
         lastname: this.state.lastname,
         ci: this.state.ci,
         city: this.state.city,
-        location: this.state.location
+        location: this.state.location,
+        dataUri: this.state.dataUri
       })
       .then(res => {
         const info = res.data.body;
         alert(info);
         this.setState({ redirect: true });
-      }).catch(e  => {
-          alert('Error de sintaxis')
+      })
+      .catch(e => {
+        alert("Error de sintaxis");
       });
     event.preventDefault();
+  }
+
+  handleTakePhotoAnimationDone(dataUri) {
+    this.setState({ dataUri });
   }
 
   sendForm() {}
@@ -66,8 +80,8 @@ export default class Register extends Component {
     if (this.state.tokenExpired === false) {
       return <Redirect to="/" />;
     }
-    if (this.state.redirect === true ){
-        return <Redirect to="dashboard" />
+    if (this.state.redirect === true) {
+      return <Redirect to="dashboard" />;
     }
     return (
       <div>
@@ -128,7 +142,26 @@ export default class Register extends Component {
                     onChange={this.handleChangeLocation}
                   />
                 </div>
-                <button type="submit" className="btn btn-secondary btn-block mt-5">
+                <div className="form-group col mt-4">
+                  <h2 className="text-center mb-4">Fotograf&iacute;a del votante</h2>
+                  {this.state.dataUri ? (
+                    <ImagePreview
+                      dataUri={this.state.dataUri}
+                      isFullscreen={this.state.isFullscreen}
+                    />
+                  ) : (
+                    <Camera
+                      onTakePhotoAnimationDone={
+                        this.handleTakePhotoAnimationDone
+                      }
+                      isFullscreen={this.state.isFullscreen}
+                    />
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-secondary btn-block mt-5"
+                >
                   Registrar
                 </button>
               </div>

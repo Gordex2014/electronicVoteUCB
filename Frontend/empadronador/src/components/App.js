@@ -6,6 +6,8 @@ import Home from '../pages/Home';
 import Login from '../pages/Login'
 import Dashboard from '../pages/Dashboard'
 import Register from '../pages/Register'
+import ModifyVoter from "../pages/ModifyVoter"
+import FindVoter from '../pages/FindVoter'
 
 import '../pages/styles/global.css'
 
@@ -18,6 +20,8 @@ export default class App extends React.Component {
             <Route exact path="/dashboard" component={Dashboard}></Route>
             <Route exact path="/login" component={Login}></Route>
             <Route exact path="/register" component={Register}></Route>
+            <Route exact path="/findvoter" component={FindVoter}></Route>
+            <Route exact path="/modifyvotervalues" component={ModifyVoter}></Route>
             <Route path="/" component={Home}></Route>
           </Switch>
         </Layout>

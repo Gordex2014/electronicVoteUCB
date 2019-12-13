@@ -22,10 +22,11 @@ const app = express()
 require('./database')
 
 // Middlewares
+app.use('/static', express.static('public'));
 app.use(cors())
 app.use(morgan('dev'))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json({limit: '20mb'}))
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }))
 
 // Enrutador
 router(app)

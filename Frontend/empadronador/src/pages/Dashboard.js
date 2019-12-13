@@ -69,9 +69,9 @@ export default class Dashboard extends Component {
             </div>
             <div className="container">
               <div className="col-6 offset-3">
-                <div className="btn btn-secondary btn-block mt-5 mb-5">
+                <Link to="/findvoter" className="btn btn-secondary btn-block mt-5 mb-5">
                   Modificar par&aacute;metros de votante
-                </div>
+                </Link>
               </div>
             </div>
             <div className="container">

@@ -5,13 +5,15 @@
  * Ingeniería Mecatrónica
  * La Paz - Bolivia, 2020
  *********************************************************/
+const imageDataURI = require('image-data-uri')
+var path = require('path');
 
 const voterStore = require("../../voterSection/store/store");
 const profileStore = require('../store/store')
 
 // Función para agregar nuevo votante, previamente controlados los ingresos
 function addVoter(voterParams) {
-  const { name, lastname, ci, city, location } = voterParams;
+  const { name, lastname, ci, city, location, dataUri } = voterParams;
   let message, status;
   let retObject = { message, status };
   // Revisión de cumplimiento de parámetros ingresados, con sus respectivas respuestas
@@ -52,6 +54,22 @@ function addVoter(voterParams) {
     retObject = { message, status };
     return Promise.resolve(retObject);
   }
+  if (!dataUri) {
+    message = "No se adjuntó ninguna imagen";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+
+  // Ingresar la imagen como archivo al servidor
+
+  imageRoute = path.join(process.cwd(),`/public/votersPhotos/${ci}.jpg`)
+  imageDataURI.outputFile(dataUri, imageRoute)
+    .then(res => console.log(res))
+
+
+
+  // Ingreso a base de datos
   let newVoter = {
     name,
     lastname,
@@ -60,7 +78,8 @@ function addVoter(voterParams) {
     location,
     facial: false,
     fingerprint: false,
-    emitedvote: false
+    emitedvote: false,
+    imgLocation: imageRoute
   };
 
   // Interacción con la base de datos
