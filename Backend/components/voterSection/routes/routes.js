@@ -77,16 +77,16 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
 });
 
 // Obtener la respuesta de verificación de coincidencia de rostros
-router.post("/faceverification", (req, res) => {
-  const { ci } = req.body;
+router.post("/faceverification", (req, res) => { //TODO: verfyToken, addImage
+  const { ci, testImg } = req.body;
   faceVerification
-    .verification(ci)
-    .then(data => {
-      if (data === true ){
-        response.success(req, res, "Comprobación facial exitosa", 200)
+    .verification(ci, testImg)
+    .then(info => {
+      if (info.message){
+        response.error(req, res, info.message, info.status, info.message)
       }
-      else {
-        response.success(req, res, "No es la misma persona", 401)
+      else if(info === true){
+        response.success(req, res, "Se ha comprobado correctamente", 200)
       }
     })
     .catch(e => {

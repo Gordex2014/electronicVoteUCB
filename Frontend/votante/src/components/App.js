@@ -5,6 +5,7 @@ import Layout from "./Layout";
 import VoterCard from "../pages/VoterCard";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
+import FacialTest from "../pages/FacialTest"
 import NotFound from '../pages/NotFound'
 
 export default class App extends React.Component {
@@ -16,7 +17,8 @@ export default class App extends React.Component {
             <Route exact path="/" component={Home}></Route>
             <Route exact path="/voterpanel" component={VoterCard}></Route>
             <Route exact path="/login" component={Login}></Route>
-            <Route path="/" component={NotFound}></Route>
+            <Route exact path="/facialtest" component={FacialTest}></Route>
+            <Route component={NotFound}></Route>
           </Switch>
         </Layout>
       </BrowserRouter>

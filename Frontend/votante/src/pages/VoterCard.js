@@ -30,15 +30,16 @@ export default class voterCard extends Component {
         if (response.data.body) {
           this.setState(response.data.body);
           if (this.state.imgLocation === undefined) {
-            this.setState({ imgUrl: '' });
+            this.setState({ imgUrl: "" });
           } else {
             const imageUrl = `${config.serverUrl}/static/votersPhotos/${this.state.ci}.jpg`;
             this.setState({ imgUrl: imageUrl });
           }
         }
-      }).catch(e => {
+      })
+      .catch(e => {
         alert("No se encuentra el votante");
-      });;
+      });
   }
 
   checkCi() {
@@ -150,12 +151,16 @@ export default class voterCard extends Component {
                     ))}
                 </ul>
                 <div className="card-body">
-                  <Link to="/facial" className="card-link">
-                    Comprobaci&oacute;n facial
-                  </Link>
-                  <Link to="/fingerprint" className="card-link">
-                    Comprobaci&oacute;n biom&eacute;trica
-                  </Link>
+                  {this.state.facial === false && (
+                    <Link to="/facialtest" className="card-link">
+                      Comprobaci&oacute;n facial
+                    </Link>
+                  )}
+                  {this.state.fingerprint === false && (
+                    <Link to="/fingerprint" className="card-link">
+                      Comprobaci&oacute;n biom&eacute;trica
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
