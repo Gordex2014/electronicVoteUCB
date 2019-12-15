@@ -11,7 +11,9 @@ const config = {
     port : process.env.PORT || 3000,
     host: process.env.HOST || 'http://localhost',
     publicRoute: process.env.PUBLIC_ROUTE || '/app',
-    secretKey: process.env.SECRET_KEY || 'Ll4v3Pru3b4'
+    secretKey: process.env.SECRET_KEY || 'Ll4v3Pru3b4',
+    azureEndPoint: process.env.AZURE_ENDPOINT,
+    azureSubscriptionKey: process.env.AZURE_SUBSCRIPTION_KEY
 }
 
 module.exports = config

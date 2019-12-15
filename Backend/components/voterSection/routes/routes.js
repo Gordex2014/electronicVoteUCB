@@ -12,6 +12,7 @@ const jwt = require("jsonwebtoken");
 const response = require("../../../network/response");
 const config = require("../../../config");
 const voterController = require("../controllers/voterController");
+const faceVerification = require("../controllers/faceLogic/faceVerification");
 
 const router = express.Router();
 
@@ -35,8 +36,7 @@ router.post("/ci", (req, res) => {
           401,
           "Búsqueda de CI inexistente"
         );
-      }
-      else if (voter.message) {
+      } else if (voter.message) {
         response.error(req, res, voter.message, voter.status, voter.message);
       } else {
         const sendToken = jwt.sign({ voter }, config.secretKey, {
@@ -69,6 +69,24 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
         response.error(req, res, info.message, info.status, info.message);
       } else {
         response.success(req, res, info, 200);
+      }
+    })
+    .catch(e => {
+      response.error(req, res, "Error inesperado", 500, e);
+    });
+});
+
+// Obtener la respuesta de verificación de coincidencia de rostros
+router.post("/faceverification", (req, res) => {
+  const { ci } = req.body;
+  faceVerification
+    .verification(ci)
+    .then(data => {
+      if (data === true ){
+        response.success(req, res, "Comprobación facial exitosa", 200)
+      }
+      else {
+        response.success(req, res, "No es la misma persona", 401)
       }
     })
     .catch(e => {

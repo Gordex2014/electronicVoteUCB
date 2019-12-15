@@ -108,6 +108,7 @@ router.post("/registervoter", verifyToken, validateToken, (req, res) => {
     });
 });
 
+// Modificar votante de la base de datos
 router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
   const { name, lastname, ci, city, location, oldCi } = req.body; //TODO: add fingerprint
   const modifiedVoter = { name, lastname, ci, city, location, oldCi };
@@ -125,6 +126,7 @@ router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
     });
 });
 
+// Borrar votante de la base de datos
 router.put("/registervoter", verifyToken, validateToken, (req, res) => {
   const { oldCi } = req.body; //TODO: add fingerprint
   const oldVoter = { oldCi };

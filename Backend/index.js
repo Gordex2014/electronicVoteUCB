@@ -13,6 +13,8 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
 
+require('dotenv').config()
+
 // Delegaciones
 const config = require('./config')
 const router = require('./network/routes')

@@ -43,9 +43,21 @@ async function deleteVoter(oldVoter) {
   return await Voter.deleteOne({ ci: oldVoter.oldCi })
 }
 
+async function modifyFacialParams(ci) {
+  const voter = await Voter.findOne({ ci: ci })
+  if (!voter) {
+    return null;
+  } else{
+    voter.facial = true
+    voter.save();
+    return true
+  }
+}
+
 module.exports = {
   add: addVoter,
   find: findVoter,
   modify: modifyVoter,
   delete: deleteVoter,
+  facial: modifyFacialParams,
 };
