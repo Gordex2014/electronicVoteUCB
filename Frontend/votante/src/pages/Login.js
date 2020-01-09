@@ -4,6 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 // import jwt from "jsonwebtoken";
 
+import config from '../utils/config'
 import ucbLogo from "../images/ucb_logo.png";
 import setAuthorizationToken from "../utils/setAuthorizationToken";
 
@@ -24,7 +25,7 @@ export default class Login extends Component {
 
   handleSubmit(event) {
     axios
-      .post("http://localhost:3000/api/voters/ci", {
+      .post(`${config.serverUrl}/api/voters/ci`, {
         ci: this.state.ci
       })
       .then(res => {

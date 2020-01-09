@@ -4,6 +4,7 @@ import axios from "axios";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 
+import config from '../utils/config'
 import Navbar from "../components/Navbar";
 import isTokenValid from "../utils/isTokenValid";
 import ImagePreview from "../utils/ImagePreview";
@@ -52,7 +53,7 @@ export default class Register extends Component {
 
   handleSubmit(event) {
     axios
-      .post("http://localhost:3000/api/register/registervoter", {
+      .post(`${config.serverUrl}/api/register/registervoter`, {
         name: this.state.name,
         lastname: this.state.lastname,
         ci: this.state.ci,

@@ -23,7 +23,7 @@ export default class voterCard extends Component {
 
   componentDidMount() {
     axios
-      .post("http://localhost:3000/api/voters/voterpanel", {
+      .post(`${config.serverUrl}/api/voters/voterpanel`, {
         ci: this.checkCi()
       })
       .then(response => {

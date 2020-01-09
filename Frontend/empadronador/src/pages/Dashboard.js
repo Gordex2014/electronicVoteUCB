@@ -5,6 +5,8 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import isTokenValid from "../utils/isTokenValid";
 
+import config from '../utils/config'
+
 export default class Dashboard extends Component {
   constructor() {
     super();
@@ -15,7 +17,7 @@ export default class Dashboard extends Component {
 
   componentDidMount() {
     axios
-      .post("http://localhost:3000/api/register/dashboard")
+      .post(`${config.serverUrl}/api/register/dashboard`)
       .then(response => {
         if (response.data.body) {
           this.setState(response.data.body.profile);

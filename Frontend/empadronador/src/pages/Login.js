@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom'
 import Navbar from "../components/Navbar";
 import setAuthorizationToken from "../utils/setAuthorizationToken";
 
+import config from '../utils/config'
 import ucbLogo from "../images/ucb_logo.png";
 
 export default class Login extends Component {
@@ -29,7 +30,7 @@ export default class Login extends Component {
 
   handleSubmit(event) {
     axios
-      .post("http://localhost:3000/api/register/login", {
+      .post(`${config.serverUrl}/api/register/login`, {
         username: this.state.username,
         password: this.state.password
       })
