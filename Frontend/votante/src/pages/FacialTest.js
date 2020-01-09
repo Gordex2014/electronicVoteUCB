@@ -45,6 +45,7 @@ export default class FacialTest extends Component {
         }
       );
       this.setState({ loading: false, data: data.data });
+      console.log(this.state.data.body.fingerprintMemoryLocation)
       const imageUrl = `${config.serverUrl}/static/votersPhotos/${this.state.data.body.ci}.jpg`;
       this.setState({ imgUrl: imageUrl });
     } catch (error) {
@@ -102,6 +103,9 @@ export default class FacialTest extends Component {
       clearTimeout(this.id)
   }
   render() {
+    if (this.state.tokenExpired === false) {
+      return <Redirect to="/" />;
+    }
     if (this.state.redirectSuccess) {
       return <Redirect to="/voterpanel"></Redirect>;
     }

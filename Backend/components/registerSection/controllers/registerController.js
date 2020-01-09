@@ -263,6 +263,43 @@ function getVoterPanel(ci) {
   });
 }
 
+function saveFingerprint(ci, fingerprintMemoryLocation) {
+  if (!ci) {
+    message = "No ha llegado ningún CI";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  const ciNumber = Number(ci);
+  if (!Number.isInteger(ciNumber)) {
+    message = "Lo que se adjuntó en el campo de CI no es un número";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  if (!fingerprintMemoryLocation) {
+    message = "No ha llegado ningún número de campo de memoria para el sensor de huella";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+  const fingerprintMemoryLocationNumber = Number(fingerprintMemoryLocation);
+  if (!Number.isInteger(fingerprintMemoryLocationNumber)) {
+    message = "Lo que se adjuntó en el campo de número de memoria no es un número";
+    status = 400;
+    retObject = { message, status };
+    return Promise.resolve(retObject);
+  }
+
+  let fingerMemoryVoter = {
+    ci: ciNumber,
+    fingerprintMemoryLocation: fingerprintMemoryLocationNumber,
+  };
+
+  return voterStore.addMissing(fingerMemoryVoter);
+  
+}
+
 module.exports = {
   addVoter,
   addProfile,
@@ -270,4 +307,5 @@ module.exports = {
   getVoterPanel,
   modifyVoter,
   deleteVoter,
+  saveFingerprint,
 };

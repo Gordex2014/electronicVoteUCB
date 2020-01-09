@@ -69,6 +69,13 @@ export default class Dashboard extends Component {
             </div>
             <div className="container">
               <div className="col-6 offset-3">
+                <Link to="/registerfingerbyci" className="btn btn-secondary btn-block mt-5 mb-5">
+                  Registrar huella dactilar
+                </Link>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
                 <Link to="/findvoter" className="btn btn-secondary btn-block mt-5 mb-5">
                   Depurar votante
                 </Link>

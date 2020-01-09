@@ -20,7 +20,8 @@ export default class Register extends Component {
       location: "",
       redirect: false,
       dataUri: "",
-      isFullscreen: false
+      isFullscreen: false,
+      fingerprintScannerInfo: ""
     };
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeLastname = this.handleChangeLastname.bind(this);
@@ -143,7 +144,9 @@ export default class Register extends Component {
                   />
                 </div>
                 <div className="form-group col mt-4">
-                  <h2 className="text-center mb-4">Fotograf&iacute;a del votante</h2>
+                  <h2 className="text-center mb-4">
+                    Fotograf&iacute;a del votante
+                  </h2>
                   {this.state.dataUri ? (
                     <ImagePreview
                       dataUri={this.state.dataUri}

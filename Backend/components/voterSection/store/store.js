@@ -43,6 +43,17 @@ async function deleteVoter(oldVoter) {
   return await Voter.deleteOne({ ci: oldVoter.oldCi })
 }
 
+async function addMissingFingerInfo(fingerMemoryVoter) {
+  const voter = await Voter.findOne({ ci: fingerMemoryVoter.ci })
+  if (!voter) {
+    return null;
+  } else{
+    voter.fingerprintMemoryLocation = fingerMemoryVoter.fingerprintMemoryLocation
+    return voter.save();
+  }
+  
+}
+
 async function modifyFacialParams(ci) {
   const voter = await Voter.findOne({ ci: ci })
   if (!voter) {
@@ -54,10 +65,23 @@ async function modifyFacialParams(ci) {
   }
 }
 
+async function modifyFingerParams(ci) {
+  const voter = await Voter.findOne({ ci: ci })
+  if (!voter) {
+    return null;
+  } else{
+    voter.fingerprint = true
+    voter.save();
+    return true
+  }
+}
+
 module.exports = {
   add: addVoter,
   find: findVoter,
   modify: modifyVoter,
   delete: deleteVoter,
   facial: modifyFacialParams,
+  addMissing: addMissingFingerInfo,
+  finger: modifyFingerParams
 };

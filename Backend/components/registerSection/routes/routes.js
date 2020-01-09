@@ -144,11 +144,38 @@ router.put("/registervoter", verifyToken, validateToken, (req, res) => {
     });
 });
 
+// Se encuentra al votante en la base de datos
 router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
   const { ci } = req.body;
-  console.log(req.body.asd);
   registerController
     .getVoterPanel(ci)
+    .then(info => {
+      if (info === null) {
+        response.error(
+          req,
+          res,
+          "Votante no encontrado",
+          400,
+          "No se ha encontrado al votante por ci"
+        );
+      } else if (!info.ci) {
+        response.error(req, res, info.message, info.status, info.message);
+      } else {
+        response.success(req, res, info, 200);
+      }
+    })
+    .catch(e => {
+      response.error(req, res, "Error inesperado", 500, e);
+    });
+});
+/**
+ * FALTA IMPLEMENTAR
+ */
+// Se agrega el espacio en memoria de la huella dactilar del votante
+router.put("/voterfingerprint", verifyToken, validateToken, (req, res) => {
+  const { ci, fingerprintMemoryLocation } = req.body;
+  registerController
+    .saveFingerprint(ci, fingerprintMemoryLocation)
     .then(info => {
       if (info === null) {
         response.error(

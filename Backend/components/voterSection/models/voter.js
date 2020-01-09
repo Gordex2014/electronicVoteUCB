@@ -20,7 +20,8 @@ const voterSchema = new Schema({
     facial: Boolean,
     fingerprint: Boolean,
     emitedvote: Boolean,
-    imgLocation: String
+    imgLocation: String,
+    fingerprintMemoryLocation: Number,
  });
 
 module.exports = mongoose.model("voters", voterSchema);

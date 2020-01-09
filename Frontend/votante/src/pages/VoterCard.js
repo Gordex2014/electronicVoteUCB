@@ -157,7 +157,7 @@ export default class voterCard extends Component {
                     </Link>
                   )}
                   {this.state.fingerprint === false && (
-                    <Link to="/fingerprint" className="card-link">
+                    <Link to="/fingerprinttest" className="card-link">
                       Comprobaci&oacute;n biom&eacute;trica
                     </Link>
                   )}
