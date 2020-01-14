@@ -59,7 +59,6 @@ def enroll_user():
 
         ## Se obtienen las características de la base de datos
         characteristics_data = retrieve_characteristics()
-        server_url = 'http://192.168.0.100:3000'
         for characteristic in characteristics_data:
             ## Si la lista llega vacía, quiere decir que la información que llegó corresponde al votante que no tiene la
             ## huella registrada, así que se omite esta prueba 
@@ -185,7 +184,7 @@ def search_fingerprint():
 # Se envían las instrucciones para luego interactuar en el frontend
 
 def send_instructions(message):
-    r = requests.post(config.server_url+'/api/fingerprint/printinstructions', data = {
+    requests.post(config.server_url+'/api/fingerprint/printinstructions', data = {
         'instructions': message,
     })
 
