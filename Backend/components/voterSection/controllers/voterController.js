@@ -39,8 +39,31 @@ function updateFingerprintInfo(ci) {
     });
   }
 
+async function getFingerCharacteristics() {
+  return await voterStore.fingerChar()
+}
+
+async function getFingerprint(ci) {
+  if (!ci) {
+    message = "No se introdujo ningún CI";
+    status = 400;
+    retObject = { message, status };
+    return (retObject);
+  }
+  const ciNumber = Number(ci);
+  if (!Number.isInteger(ciNumber)) {
+    message = "Lo que se adjuntó en el campo de CI no es un número";
+    status = 400;
+    retObject = { message, status };
+    return (retObject);
+  }
+  return await voterStore.fingerUniqueChar(ciNumber)
+}
+
 module.exports = {
     authenticateVoter,
     getVoterPanel,
-    updateFingerprintInfo
+    updateFingerprintInfo,
+    getFingerCharacteristics,
+    getFingerprint,
 }

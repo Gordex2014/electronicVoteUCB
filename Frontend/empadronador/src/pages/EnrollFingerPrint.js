@@ -42,20 +42,17 @@ export default class EnrollFingerPrint extends Component {
 
   handleNewEnroll(event) {
     axios
-      .post(`${config.serverUrl}/api/fingerprint/enroll`, {
+      .put(`${config.serverUrl}/api/register/voterfingerprint`, {
         ci: this.state.ci
       })
     .then(response => {
       if(response.data.body){
-        axios.put(
-          `${config.serverUrl}/api/register/voterfingerprint`,{
-          fingerprintMemoryLocation: response.data.body,
-          ci: this.state.ci
-        })
-        alert('Huella registrada correctamente')
+        console.log(response.data.body)
+        alert(response.data.body)
         this.setState({ redirect: true })
       }
       if(response.data.error){
+        console.log(response.data.error)
         alert(response.data.error)
         this.setState({ instructions: "" })
       }

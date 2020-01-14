@@ -12,43 +12,23 @@ const axios = require("axios");
 
 // Emisión de instrucciones por sockets
 const socket = require("../../../socket").socket;
-const voterController = require('../../voterSection/controllers/voterController')
 
 const response = require("../../../network/response");
 
 const router = express.Router();
 
+// La petición llega con la esperanza de que sea devuelto el array que contiene las características
+// biométricas de la parsona
 router.post("/enroll", (req, res) => {
-  let respuesta = axios
+  let petitionResponse = axios
     .get(`${config.fingerprintHost}/enroll`)
     .then(data => {
-      respuesta = data.data;
-      if (respuesta.error) {
-        response.error(req, res, respuesta.error, 206, respuesta.error);
+      petitionResponse = data.data;
+      if (petitionResponse.error) {
+        response.error(req, res, petitionResponse.error, 206, petitionResponse.error);
       }
-      if (respuesta.value) {
-        response.success(req, res, `${respuesta.value - 1}`); //TODO: respuesta.value a la base de datos
-      }
-    })
-    .catch(e => {
-      console.log(e);
-    });
-});
-
-router.post("/delete", (req, res) => {
-  const { positionToDelete } = req.body;
-  const params = {
-    positionToDelete: positionToDelete
-  };
-  respuesta = axios
-    .post(`${config.fingerprintHost}/delete`, params)
-    .then(data => {
-      respuesta = data.data;
-      if (respuesta.error) {
-        response.error(req, res, respuesta.error, 403, respuesta.error);
-      }
-      if (respuesta.value) {
-        response.success(req, res, respuesta.value);
+      if (petitionResponse.value) {
+        response.success(req, res, `${petitionResponse.value}`); //TODO: respuesta.value a la base de datos
       }
     })
     .catch(e => {
@@ -57,20 +37,19 @@ router.post("/delete", (req, res) => {
 });
 
 router.post("/search", (req, res) => {
-  const { positionToSearch, ci } = req.body;
+  const { characteristicsData } = req.body;
   const params = {
-    positionToSearch: positionToSearch
+    characteristicsData: characteristicsData
   };
-  let respuesta = axios
+  let petitionResponse = axios
     .post(`${config.fingerprintHost}/search`, params)
     .then(data => {
-      respuesta = data.data;
-      if (respuesta.error) {
-        response.error(req, res, respuesta.error, 206, respuesta.error);
+      petitionResponse = data.data;
+      if (petitionResponse.error) {
+        response.error(req, res, petitionResponse.error, 206, petitionResponse.error);
       }
-      if (respuesta.value) {
-        voterController.updateFingerprintInfo(ci)
-        response.success(req, res, respuesta.value);
+      if (petitionResponse.value) {
+        response.success(req, res, petitionResponse.value);
       }
     })
     .catch(e => {
@@ -82,7 +61,6 @@ router.post("/search", (req, res) => {
 
 router.post("/printinstructions", (req, res) => {
   const instructions = req.body.instructions;
-  console.log(instructions);
   socket.io.emit("instructions", req.body);
   res.sendStatus(200);
 });

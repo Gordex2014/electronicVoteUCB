@@ -21,7 +21,7 @@ const voterSchema = new Schema({
     fingerprint: Boolean,
     emitedvote: Boolean,
     imgLocation: String,
-    fingerprintMemoryLocation: Number,
+    fingerprintCharacteristics: Array,
  });
 
 module.exports = mongoose.model("voters", voterSchema);

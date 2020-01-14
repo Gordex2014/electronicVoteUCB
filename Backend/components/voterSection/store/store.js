@@ -43,12 +43,12 @@ async function deleteVoter(oldVoter) {
   return await Voter.deleteOne({ ci: oldVoter.oldCi })
 }
 
-async function addMissingFingerInfo(fingerMemoryVoter) {
+async function addFingerprintCharacteristics(fingerMemoryVoter) {
   const voter = await Voter.findOne({ ci: fingerMemoryVoter.ci })
   if (!voter) {
     return null;
   } else{
-    voter.fingerprintMemoryLocation = fingerMemoryVoter.fingerprintMemoryLocation
+    voter.fingerprintCharacteristics = fingerMemoryVoter.fingerprintCharacteristics
     return voter.save();
   }
   
@@ -76,12 +76,40 @@ async function modifyFingerParams(ci) {
   }
 }
 
+// Se usará para entregar toda la información de los usuarios con huellas registradas TODO: Cambiar name a info de huella
+async function fingerCharacteristics() {
+  const voters = await Voter.find({});
+  const names = voters.map((names) => {
+    return names.fingerprintCharacteristics
+  })
+  if (!voters) {
+    return null;
+  }
+  return names;
+}
+
+async function fingerUniqueChar(ci) {
+  const voter = await Voter.findOne({ ci })
+  if (!voter){
+    return null
+  }
+  if (voter.fingerprintCharacteristics.length == 0){
+    message = "El votante aún no tiene la huella dactilar registrada";
+    status = 206;
+    retObject = { message, status };
+    return (retObject);
+  }
+  return voter.fingerprintCharacteristics
+}
+
 module.exports = {
   add: addVoter,
   find: findVoter,
   modify: modifyVoter,
   delete: deleteVoter,
   facial: modifyFacialParams,
-  addMissing: addMissingFingerInfo,
-  finger: modifyFingerParams
+  finger: modifyFingerParams,
+  addFingerprintCharacteristics: addFingerprintCharacteristics,
+  fingerChar: fingerCharacteristics,
+  fingerUniqueChar: fingerUniqueChar
 };

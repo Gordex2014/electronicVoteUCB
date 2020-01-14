@@ -263,7 +263,7 @@ function getVoterPanel(ci) {
   });
 }
 
-function saveFingerprint(ci, fingerprintMemoryLocation) {
+function saveFingerprint(ci, fingerprintCharacteristics) {
   if (!ci) {
     message = "No ha llegado ningún CI";
     status = 400;
@@ -277,26 +277,18 @@ function saveFingerprint(ci, fingerprintMemoryLocation) {
     retObject = { message, status };
     return Promise.resolve(retObject);
   }
-  if (!fingerprintMemoryLocation) {
-    message = "No ha llegado ningún número de campo de memoria para el sensor de huella";
-    status = 400;
-    retObject = { message, status };
-    return Promise.resolve(retObject);
-  }
-  const fingerprintMemoryLocationNumber = Number(fingerprintMemoryLocation);
-  if (!Number.isInteger(fingerprintMemoryLocationNumber)) {
-    message = "Lo que se adjuntó en el campo de número de memoria no es un número";
-    status = 400;
-    retObject = { message, status };
-    return Promise.resolve(retObject);
+  // Si no llegan características quiere decir que no llegaron datos del sensor, con lo que se toman los datos
+  // de error proporcionados por el sensor
+  if (fingerprintCharacteristics === undefined) {
+    return Promise.resolve('No characteristics');
   }
 
   let fingerMemoryVoter = {
     ci: ciNumber,
-    fingerprintMemoryLocation: fingerprintMemoryLocationNumber,
+    fingerprintCharacteristics: fingerprintCharacteristics,
   };
 
-  return voterStore.addMissing(fingerMemoryVoter);
+  return voterStore.addFingerprintCharacteristics(fingerMemoryVoter);
   
 }
 

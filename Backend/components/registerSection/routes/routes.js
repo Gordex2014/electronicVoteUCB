@@ -6,8 +6,14 @@
  * La Paz - Bolivia, 2020
  *********************************************************/
 
+/****************************
+ * Sección de empadronadores
+ * Rutas
+ ***************************/
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const response = require("../../../network/response");
 const registerController = require("../controllers/registerController");
@@ -88,7 +94,7 @@ router.post("/login", (req, res) => {
 });
 
 /************************************************************************************
- * Acá empieza la administración del votante, sea registro, cambio de nombre, y demás
+ * Empieza la administración del votante, sea registro, cambio de nombre, y demás
  ***********************************************************************************/
 
 router.post("/registervoter", verifyToken, validateToken, (req, res) => {
@@ -168,33 +174,53 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
-/**
- * FALTA IMPLEMENTAR
- */
-// Se agrega el espacio en memoria de la huella dactilar del votante
-router.put("/voterfingerprint", verifyToken, validateToken, (req, res) => {
-  const { ci, fingerprintMemoryLocation } = req.body;
-  registerController
-    .saveFingerprint(ci, fingerprintMemoryLocation)
-    .then(info => {
-      if (info === null) {
-        response.error(
-          req,
-          res,
-          "Votante no encontrado",
-          400,
-          "No se ha encontrado al votante por ci"
-        );
-      } else if (!info.ci) {
-        response.error(req, res, info.message, info.status, info.message);
-      } else {
-        response.success(req, res, info, 200);
-      }
-    })
-    .catch(e => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+
+// Se agrega las características de la huella dactilar del votante a la base de datos
+router.put(
+  "/voterfingerprint",
+  verifyToken,
+  validateToken,
+  async (req, res) => {
+    const { ci } = req.body;
+    let characteristicsArray = undefined;
+    // Respuesta obtenida de la petición que se hace al API que se expone para interactuar con el sensor
+    let fingerResponse = await axios.post(
+      `${config.host}:${config.port}/api/fingerprint/enroll`
+    );
+    if (fingerResponse.data.body) {
+      // Se convierte el string que llega a un array para guardarse en la Base de datos
+      characteristicsArray = JSON.parse("[" + fingerResponse.data.body + "]");
+    }
+    registerController
+      .saveFingerprint(ci, characteristicsArray)
+      .then(info => {
+        if (info === "No characteristics") {
+          response.error(
+            req,
+            res,
+            fingerResponse.data.error,
+            206,
+            fingerResponse.data.error
+          );
+        } else if (info === null) {
+          response.error(
+            req,
+            res,
+            "Error de sintaxis",
+            400,
+            "Error de sintaxis"
+          );
+        } else if (!info.ci) {
+          response.error(req, res, info.message, info.status, info.message);
+        } else {
+          response.success(req, res, "Huella registrada con éxito", 200);
+        }
+      })
+      .catch(e => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Función de verificación de token, solamente comprueba de que exista un token
 // de verificación, no que sea auténtico

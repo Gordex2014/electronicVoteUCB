@@ -6,8 +6,14 @@
  * La Paz - Bolivia, 2020
  *********************************************************/
 
+/*********************
+ * Sección de votantes
+ * Rutas
+ ********************/
+
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const response = require("../../../network/response");
 const config = require("../../../config");
@@ -15,12 +21,6 @@ const voterController = require("../controllers/voterController");
 const faceVerification = require("../controllers/faceLogic/faceVerification");
 
 const router = express.Router();
-
-router.post("/", (req, res) => {
-  res.json({
-    message: "Puede llegar información del concepto de votación"
-  });
-});
 
 // Comprueba la existencia del CI para poder obtener el panel de votante
 router.post("/ci", (req, res) => {
@@ -77,21 +77,69 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
 });
 
 // Obtener la respuesta de verificación de coincidencia de rostros
-router.post("/faceverification", (req, res) => { //TODO: verfyToken, addImage
+router.post("/faceverification", verifyToken, validateToken, (req, res) => {
   const { ci, testImg } = req.body;
   faceVerification
     .verification(ci, testImg)
     .then(info => {
-      if (info.message){
-        response.error(req, res, info.message, info.status, info.message)
-      }
-      else if(info === true){
-        response.success(req, res, "Se ha comprobado correctamente", 200)
+      if (info.message) {
+        response.error(req, res, info.message, info.status, info.message);
+      } else if (info === true) {
+        response.success(req, res, "Se ha comprobado correctamente", 200);
       }
     })
     .catch(e => {
       response.error(req, res, "Error inesperado", 500, e);
     });
+});
+
+// Obtener la respuesta de verificación ded verificación de conincidencia de huellas dactilares
+
+router.post("/fingerverification", verifyToken, validateToken, async (req, res) => {
+  let errorStatus = {};
+  const { ci } = req.body;
+  const characteristicsData = await voterController.getFingerprint(ci);
+  if (characteristicsData.message) {
+    errorStatus.message = characteristicsData.message;
+    errorStatus.status = characteristicsData.status;
+  }
+  // Se comprueba que no exista error de la anterior petición
+  if (!errorStatus.message) {
+    const responseData = await axios.post(
+      `${config.host}:${config.port}/api/fingerprint/search`,
+      {
+        characteristicsData: characteristicsData
+      }
+    );
+    // Se actualiza el estado de error
+    if (responseData.data.error) {
+      errorStatus.message = responseData.data.error;
+      errorStatus.status = 206;
+    } else {
+      // Como se hizo la comprobación solo hace literalmente milisegundos, no se espera estado de error
+      await voterController.updateFingerprintInfo(ci);
+    }
+  }
+  // Nuevamente se comprueba de que no exista error
+  if (!errorStatus.message) {
+    response.success(req, res, "Se ha comprobado correctamente", 200);
+  } else {
+    response.error(
+      req,
+      res,
+      errorStatus.message,
+      errorStatus.status,
+      errorStatus.message
+    );
+  }
+});
+
+// Función que obtiene las características de todas las huellas almacenadas en la base de datos, para verificar que no
+// existan duplicadas
+
+router.get("/fingercharacteristics", async (req, res) => {
+  const characteristics = await voterController.getFingerCharacteristics();
+  res.send(characteristics);
 });
 
 // Función de verificación de token, solamente comprueba de que exista un token

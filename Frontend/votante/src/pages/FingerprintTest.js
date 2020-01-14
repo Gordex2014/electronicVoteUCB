@@ -60,8 +60,7 @@ export default class FingerprintTest extends Component {
 
   handleFingerVerificationPetition(event) {
     axios
-      .post(`${config.serverUrl}/api/fingerprint/search`, {
-        positionToSearch: this.state.data.body.fingerprintMemoryLocation,
+      .post(`${config.serverUrl}/api/voters/fingerverification`, {
         ci: this.state.data.body.ci
       })
       .then(response => {
