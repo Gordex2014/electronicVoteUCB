@@ -1,12 +1,25 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ ***********************************************************/
+
+/****************************************************
+ * Página correspondiente al login de usuario con ci
+ ***************************************************/
+
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-// import jwt from "jsonwebtoken";
 
-import config from '../utils/config'
-import ucbLogo from "../images/ucb_logo.png";
+// Utilidades de importancia
+import config from "../utils/config";
 import setAuthorizationToken from "../utils/setAuthorizationToken";
+
+import ucbLogo from "../images/ucb_logo.png";
 
 export default class Login extends Component {
   constructor() {
@@ -23,26 +36,29 @@ export default class Login extends Component {
     this.setState({ ci: event.target.value });
   }
 
+  // Con el click se confirma con el servidor la existencia del ci
   handleSubmit(event) {
     axios
       .post(`${config.serverUrl}/api/voters/ci`, {
         ci: this.state.ci
       })
       .then(res => {
+        // si todo sale bien se obtiene el token de la base de datos que autoriza la sesión
         alert("Ha ingresado con éxito");
         const token = res.data.body;
         localStorage.setItem("jwtToken", token);
         setAuthorizationToken(token);
         this.setState({ redirect: true });
-      }).catch(e  => {
-          alert('No se encuentra autorizado')
+      })
+      .catch(e => {
+        alert("No se encuentra autorizado");
       });
     event.preventDefault();
   }
 
   render() {
-    const redirect = this.state.redirect;
-    if (redirect) {
+    // Si la respuesta es exitosa entonces existe redirección
+    if (this.state.redirect) {
       return (
         <Redirect
           to={{

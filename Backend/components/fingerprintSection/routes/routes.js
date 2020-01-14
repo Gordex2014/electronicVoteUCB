@@ -25,7 +25,13 @@ router.post("/enroll", (req, res) => {
     .then(data => {
       petitionResponse = data.data;
       if (petitionResponse.error) {
-        response.error(req, res, petitionResponse.error, 206, petitionResponse.error);
+        response.error(
+          req,
+          res,
+          petitionResponse.error,
+          206,
+          petitionResponse.error
+        );
       }
       if (petitionResponse.value) {
         response.success(req, res, `${petitionResponse.value}`); //TODO: respuesta.value a la base de datos
@@ -46,7 +52,13 @@ router.post("/search", (req, res) => {
     .then(data => {
       petitionResponse = data.data;
       if (petitionResponse.error) {
-        response.error(req, res, petitionResponse.error, 206, petitionResponse.error);
+        response.error(
+          req,
+          res,
+          petitionResponse.error,
+          206,
+          petitionResponse.error
+        );
       }
       if (petitionResponse.value) {
         response.success(req, res, petitionResponse.value);

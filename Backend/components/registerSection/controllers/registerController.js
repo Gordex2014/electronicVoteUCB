@@ -5,11 +5,11 @@
  * Ingeniería Mecatrónica
  * La Paz - Bolivia, 2020
  *********************************************************/
-const imageDataURI = require('image-data-uri')
-var path = require('path');
+const imageDataURI = require("image-data-uri");
+var path = require("path");
 
 const voterStore = require("../../voterSection/store/store");
-const profileStore = require('../store/store')
+const profileStore = require("../store/store");
 
 // Función para agregar nuevo votante, previamente controlados los ingresos
 function addVoter(voterParams) {
@@ -62,9 +62,8 @@ function addVoter(voterParams) {
   }
 
   // Ingresar la imagen como archivo al servidor
-  imageRoute = path.join(process.cwd(),`/public/votersPhotos/${ci}.jpg`)
-  imageDataURI.outputFile(dataUri, imageRoute)
-    .then(res => console.log(res))
+  imageRoute = path.join(process.cwd(), `/public/votersPhotos/${ci}.jpg`);
+  imageDataURI.outputFile(dataUri, imageRoute).then(res => console.log(res));
 
   // Ingreso a base de datos
   let newVoter = {
@@ -126,7 +125,7 @@ function modifyVoter(voterParams) {
     retObject = { message, status };
     return Promise.resolve(retObject);
   }
-  if(!oldCi){
+  if (!oldCi) {
     message = "No se tienen ningún dato de un ci anterior";
     status = 400;
     retObject = { message, status };
@@ -153,7 +152,7 @@ function deleteVoter(voterParams) {
   let message, status;
   let retObject = { message, status };
   // Revisión de cumplimiento de parámetros ingresados, con sus respectivas respuestas
-  if(!oldCi){
+  if (!oldCi) {
     message = "No se tienen ningún dato de un ci anterior";
     status = 400;
     retObject = { message, status };
@@ -204,7 +203,7 @@ function addProfile(profileParams) {
     retObject = { message, status };
     return Promise.resolve(retObject);
   }
-  
+
   let newProfile = {
     name,
     lastname,
@@ -218,8 +217,8 @@ function addProfile(profileParams) {
 }
 
 function authenticateProfile(profileLogin) {
-  const { username, password } = profileLogin
-  if ( !username ) {
+  const { username, password } = profileLogin;
+  if (!username) {
     message = "No se introdujo ningun nombre de usuario";
     status = 400;
     retObject = { message, status };
@@ -280,16 +279,15 @@ function saveFingerprint(ci, fingerprintCharacteristics) {
   // Si no llegan características quiere decir que no llegaron datos del sensor, con lo que se toman los datos
   // de error proporcionados por el sensor
   if (fingerprintCharacteristics === undefined) {
-    return Promise.resolve('No characteristics');
+    return Promise.resolve("No characteristics");
   }
 
   let fingerMemoryVoter = {
     ci: ciNumber,
-    fingerprintCharacteristics: fingerprintCharacteristics,
+    fingerprintCharacteristics: fingerprintCharacteristics
   };
 
   return voterStore.addFingerprintCharacteristics(fingerMemoryVoter);
-  
 }
 
 module.exports = {
@@ -299,5 +297,5 @@ module.exports = {
   getVoterPanel,
   modifyVoter,
   deleteVoter,
-  saveFingerprint,
+  saveFingerprint
 };

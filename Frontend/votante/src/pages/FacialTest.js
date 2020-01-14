@@ -1,3 +1,15 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ ***********************************************************/
+
+/****************************************
+ * Página correspondiente al test Facial
+ ***************************************/
+
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +20,7 @@ import PageLoading from "../components/Loader";
 import PageError from "../components/PageError";
 import PhotoShoot from "../components/PhotoShoot";
 
+// Utilidades necesarias
 import isTokenValid from "../utils/isTokenValid";
 import config from "../utils/config";
 
@@ -35,17 +48,18 @@ export default class FacialTest extends Component {
     this.fetchData();
   }
 
+  // Se obtiene información del servidor
   fetchData = async () => {
     this.setState({ loading: true, error: null });
     try {
       const data = await axios.post(
         `${config.serverUrl}/api/voters/voterpanel`,
         {
+          // Se envía el ci para obtener los datos correspondientes al votante
           ci: this.checkCi()
         }
       );
       this.setState({ loading: false, data: data.data });
-      console.log(this.state.data.body.fingerprintMemoryLocation)
       const imageUrl = `${config.serverUrl}/static/votersPhotos/${this.state.data.body.ci}.jpg`;
       this.setState({ imgUrl: imageUrl });
     } catch (error) {
@@ -53,6 +67,7 @@ export default class FacialTest extends Component {
     }
   };
 
+  // Función encargada de obtener el ci a partir del token de forma SEGURA
   checkCi() {
     let ci;
     if (this.state.tokenExpired) {
@@ -64,14 +79,15 @@ export default class FacialTest extends Component {
     return ci;
   }
 
+  // Manejador de captura ded imagenn
   onCapture(value) {
     this.setState({
       imgSrc: value
     });
   }
 
+  // Se envía la imagen capturada junto con el ci del votante al servidor para el manejo de la verificación
   handleFaceVerificationPetition = async () => {
-    console.log(this.state.ci);
     this.setState({ loading: true, error: null });
     try {
       const data = await axios.post(
@@ -89,6 +105,7 @@ export default class FacialTest extends Component {
     }
   };
 
+  // Manejo de redirecciones
   handleRedirectSuccess() {
     this.setState({ redirectSuccess: true });
   }
@@ -100,7 +117,7 @@ export default class FacialTest extends Component {
   }
 
   componentWillUnmount() {
-      clearTimeout(this.id)
+    clearTimeout(this.id);
   }
   render() {
     if (this.state.tokenExpired === false) {
@@ -119,6 +136,9 @@ export default class FacialTest extends Component {
           <PageLoading />
         </div>
       );
+    }
+    if (this.state.data.body.facial === true) {
+      return <Redirect to="/voterpanel"></Redirect>;
     }
     if (this.state.error) {
       return (

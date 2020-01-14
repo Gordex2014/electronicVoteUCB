@@ -1,3 +1,15 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ ***********************************************************/
+
+/**********************
+ * Página de bienvenida
+ **********************/
+
 import React, { Component } from "react";
 import Navbar from "../components/Navbar";
 

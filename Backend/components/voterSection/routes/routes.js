@@ -95,44 +95,49 @@ router.post("/faceverification", verifyToken, validateToken, (req, res) => {
 
 // Obtener la respuesta de verificación ded verificación de conincidencia de huellas dactilares
 
-router.post("/fingerverification", verifyToken, validateToken, async (req, res) => {
-  let errorStatus = {};
-  const { ci } = req.body;
-  const characteristicsData = await voterController.getFingerprint(ci);
-  if (characteristicsData.message) {
-    errorStatus.message = characteristicsData.message;
-    errorStatus.status = characteristicsData.status;
-  }
-  // Se comprueba que no exista error de la anterior petición
-  if (!errorStatus.message) {
-    const responseData = await axios.post(
-      `${config.host}:${config.port}/api/fingerprint/search`,
-      {
-        characteristicsData: characteristicsData
+router.post(
+  "/fingerverification",
+  verifyToken,
+  validateToken,
+  async (req, res) => {
+    let errorStatus = {};
+    const { ci } = req.body;
+    const characteristicsData = await voterController.getFingerprint(ci);
+    if (characteristicsData.message) {
+      errorStatus.message = characteristicsData.message;
+      errorStatus.status = characteristicsData.status;
+    }
+    // Se comprueba que no exista error de la anterior petición
+    if (!errorStatus.message) {
+      const responseData = await axios.post(
+        `${config.host}:${config.port}/api/fingerprint/search`,
+        {
+          characteristicsData: characteristicsData
+        }
+      );
+      // Se actualiza el estado de error
+      if (responseData.data.error) {
+        errorStatus.message = responseData.data.error;
+        errorStatus.status = 206;
+      } else {
+        // Como se hizo la comprobación solo hace literalmente milisegundos, no se espera estado de error
+        await voterController.updateFingerprintInfo(ci);
       }
-    );
-    // Se actualiza el estado de error
-    if (responseData.data.error) {
-      errorStatus.message = responseData.data.error;
-      errorStatus.status = 206;
+    }
+    // Nuevamente se comprueba de que no exista error
+    if (!errorStatus.message) {
+      response.success(req, res, "Se ha comprobado correctamente", 200);
     } else {
-      // Como se hizo la comprobación solo hace literalmente milisegundos, no se espera estado de error
-      await voterController.updateFingerprintInfo(ci);
+      response.error(
+        req,
+        res,
+        errorStatus.message,
+        errorStatus.status,
+        errorStatus.message
+      );
     }
   }
-  // Nuevamente se comprueba de que no exista error
-  if (!errorStatus.message) {
-    response.success(req, res, "Se ha comprobado correctamente", 200);
-  } else {
-    response.error(
-      req,
-      res,
-      errorStatus.message,
-      errorStatus.status,
-      errorStatus.message
-    );
-  }
-});
+);
 
 // Función que obtiene las características de todas las huellas almacenadas en la base de datos, para verificar que no
 // existan duplicadas

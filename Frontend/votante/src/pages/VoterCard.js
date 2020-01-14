@@ -1,3 +1,15 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ ***********************************************************/
+
+/*************************************************
+ * Página correspondiente al dashboard de usuario
+ *************************************************/
+
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
@@ -5,11 +17,13 @@ import jwt from "jsonwebtoken";
 
 import Navbar from "../components/Navbar";
 
+// Importe de utilidades
 import isTokenValid from "../utils/isTokenValid";
+import config from "../utils/config";
+
 import persona from "../images/incognito.png";
 import errorIcon from "../images/error-icon.png";
 import checkIcon from "../images/check-icon.png";
-import config from "../utils/config";
 
 export default class voterCard extends Component {
   constructor(props) {
@@ -22,6 +36,7 @@ export default class voterCard extends Component {
   }
 
   componentDidMount() {
+    // Obtención de información del servidor
     axios
       .post(`${config.serverUrl}/api/voters/voterpanel`, {
         ci: this.checkCi()
@@ -29,6 +44,7 @@ export default class voterCard extends Component {
       .then(response => {
         if (response.data.body) {
           this.setState(response.data.body);
+          // Si por algún motivo no existe una imagen de referencia se pone una imagen por default
           if (this.state.imgLocation === undefined) {
             this.setState({ imgUrl: "" });
           } else {
@@ -42,6 +58,7 @@ export default class voterCard extends Component {
       });
   }
 
+  // Se obtiene el ci a partir del token
   checkCi() {
     let ci;
     if (this.state.tokenExpired) {
@@ -53,6 +70,7 @@ export default class voterCard extends Component {
     return ci;
   }
 
+  // Si el votante tiene las comprobaciones facial y dactilar está listo para votar
   readytoVote() {
     if (this.state.facial === true) {
       if (this.state.fingerprint === true) {

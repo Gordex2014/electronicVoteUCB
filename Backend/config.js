@@ -7,14 +7,14 @@
  *********************************************************/
 
 const config = {
-    dbUrl: process.env.DB_URL || 'mongodb://localhost/testBackend:27017',
-    port : process.env.PORT || 3000,
-    host: process.env.HOST || 'http://localhost',
-    publicRoute: process.env.PUBLIC_ROUTE || '/app',
-    secretKey: process.env.SECRET_KEY || 'Ll4v3Pru3b4',
-    azureEndPoint: process.env.AZURE_ENDPOINT,
-    azureSubscriptionKey: process.env.AZURE_SUBSCRIPTION_KEY,
-    fingerprintHost: process.env.FINGERPRINT_HOST || 'http://192.168.0.14:8081'
-}
+  dbUrl: process.env.DB_URL || "mongodb://localhost/testBackend:27017",
+  port: process.env.PORT || 3000,
+  host: process.env.HOST || "http://localhost",
+  publicRoute: process.env.PUBLIC_ROUTE || "/app",
+  secretKey: process.env.SECRET_KEY || "Ll4v3Pru3b4",
+  azureEndPoint: process.env.AZURE_ENDPOINT,
+  azureSubscriptionKey: process.env.AZURE_SUBSCRIPTION_KEY,
+  fingerprintHost: process.env.FINGERPRINT_HOST || "http://192.168.0.14:8081"
+};
 
-module.exports = config
+module.exports = config;

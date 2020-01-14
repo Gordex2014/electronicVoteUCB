@@ -1,6 +1,18 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ ***********************************************************/
+
+/**********************************************************
+ * Componente encargado de mostrar el footer de la web app
+ **********************************************************/
+
 import React, { Component } from "react";
 
-import './styles/footer.css'
+import "./styles/footer.css";
 
 export default class Footer extends Component {
   render() {

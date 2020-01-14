@@ -11,8 +11,8 @@ const Profile = require("../models/profile");
 // Agregar empadronador a la base de datos
 async function addProfile(profile) {
   let newProfile = new Profile();
-  Object.assign(newProfile, profile)
-  newProfile.password = newProfile.encrypthPassword(profile.password)
+  Object.assign(newProfile, profile);
+  newProfile.password = newProfile.encrypthPassword(profile.password);
   return newProfile.save();
 }
 
@@ -29,5 +29,5 @@ async function findProfile(filterProfile) {
 
 module.exports = {
   add: addProfile,
-  find: findProfile,
+  find: findProfile
 };

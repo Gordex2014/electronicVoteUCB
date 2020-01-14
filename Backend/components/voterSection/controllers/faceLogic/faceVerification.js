@@ -8,8 +8,8 @@
 
 const axios = require("axios");
 const fs = require("fs");
-const path = require('path')
-const imageDataURI = require('image-data-uri')
+const path = require("path");
+const imageDataURI = require("image-data-uri");
 
 const faces = require("./obtainFaceId");
 const config = require("../../../../config");
@@ -43,7 +43,9 @@ async function verification(ci, testImg) {
   }
   // Ingresar la imagen como archivo al servidor
   imageRoute = path.join(process.cwd(), `/public/votersPhotos/temp/${ci}.jpg`);
-  await imageDataURI.outputFile(testImg, imageRoute).then(res => console.log(res));
+  await imageDataURI
+    .outputFile(testImg, imageRoute)
+    .then(res => console.log(res));
   // Conexión con Azure Cognitive Services
   const options = {
     headers: {
@@ -57,7 +59,7 @@ async function verification(ci, testImg) {
   if (response.data.isIdentical) {
     return voterStore.facial(ci);
   }
-  return { message: "No es la misma persona", status: 401};
+  return { message: "No es la misma persona", status: 401 };
 }
 
 module.exports = {
