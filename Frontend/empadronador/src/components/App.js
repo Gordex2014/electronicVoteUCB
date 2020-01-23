@@ -1,6 +1,20 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/*******************************
+ * Componente principal de rutas
+ *******************************/
+
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 
+// Se importan todas las páginas que se van a incluir en la aplicación
 import Layout from "./Layout";
 import Home from '../pages/Home';
 import Login from '../pages/Login'
@@ -11,6 +25,7 @@ import FindVoter from '../pages/FindVoter'
 import EnrollFingerprint from '../pages/EnrollFingerPrint'
 import RegisterFingerByCi from '../pages/RegisterFingerByCi'
 
+// Intento de footer TODO: Por implementar
 import '../pages/styles/global.css'
 
 
@@ -18,6 +33,7 @@ export default class App extends React.Component {
   render() {
     return (
       <BrowserRouter>
+      {/* Se incluye el layout en el router, ya que toda la app lo utiliza */}
         <Layout>
           <Switch>
             <Route exact path="/dashboard" component={Dashboard}></Route>

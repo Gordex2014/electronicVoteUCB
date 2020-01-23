@@ -1,10 +1,24 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/*********************************************************************
+ * Página del dashboard, una vez el empadronador ha logeado con éxito
+ ********************************************************************/
+
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import axios from "axios";
 
 import Navbar from "../components/Navbar";
-import isTokenValid from "../utils/isTokenValid";
 
+// Utilidades
+import isTokenValid from "../utils/isTokenValid";
 import config from '../utils/config'
 
 export default class Dashboard extends Component {
@@ -15,6 +29,7 @@ export default class Dashboard extends Component {
     };
   }
 
+  // Se obtiene información del servidor
   componentDidMount() {
     axios
       .post(`${config.serverUrl}/api/register/dashboard`)

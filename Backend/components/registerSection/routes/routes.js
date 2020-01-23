@@ -49,6 +49,7 @@ router.post("/dashboard", verifyToken, validateToken, (req, res) => {
   const decodedProfile = jwt.verify(req.token, config.secretKey);
   let profileToSend = {};
   Object.assign(profileToSend, decodedProfile);
+  // No se envía el password al frontend
   profileToSend.profile.password = "";
   response.success(req, res, profileToSend, 200);
 });

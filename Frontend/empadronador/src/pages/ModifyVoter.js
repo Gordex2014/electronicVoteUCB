@@ -1,12 +1,26 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/***************************************
+ * Página para la depuración del votante
+ ***************************************/
+
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 
 import Navbar from "../components/Navbar";
 
+import persona from "../images/incognito.png";
+
 import isTokenValid from "../utils/isTokenValid";
 import config from "../utils/config";
-import persona from "../images/incognito.png";
 
 export default class ModifyVoter extends Component {
   constructor(props) {
@@ -27,11 +41,13 @@ export default class ModifyVoter extends Component {
 
   componentDidMount() {
     axios
+    // Una vez se ha encontrado al votante, se obtienen los datos del votante
       .post(`${config.serverUrl}/api/register/voterpanel`, {
         ci: this.props.location.state.ci
       })
       .then(response => {
         if (response.data.body) {
+          // Por si no existiera imagen del votante, se pone una imagen estandar(Etapa de pruebas)
           this.setState(response.data.body);
           if (this.state.imgLocation === undefined) {
             this.setState({ imgUrl: "" });
@@ -63,6 +79,7 @@ export default class ModifyVoter extends Component {
   }
 
   handleSubmitModify(event) {
+    // Modificar valores del votante
     axios
       .patch(`${config.serverUrl}/api/register/registervoter`, {
         name: this.state.name,
@@ -78,12 +95,14 @@ export default class ModifyVoter extends Component {
         this.setState({ redirect: true });
       })
       .catch(e => {
+        // Por si es que ingresan valores incoherentes
         alert("Error de sintaxis");
       });
     event.preventDefault();
   }
 
   handleSubmitDelete(event) {
+    // Eliminar al votante
     axios
       .put(`${config.serverUrl}/api/register/registervoter`, {
         oldCi: this.props.location.state.ci

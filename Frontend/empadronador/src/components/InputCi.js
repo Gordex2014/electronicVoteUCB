@@ -1,9 +1,23 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/****************************************************
+ * Componente que se utiliza para la búsqueda por CI
+ ****************************************************/
+
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from 'axios'
 
 import ucbLogo from "../images/ucb-imt-logo-two.png";
 
+// Utilidades
 import config from "../utils/config";
 import isTokenValid from "../utils/isTokenValid";
 
@@ -11,6 +25,7 @@ export default class InputCi extends Component {
   constructor() {
     super();
     this.state = {
+      // Comprobación de validez del token
       tokenExpired: isTokenValid(localStorage.jwtToken),
       ci: "",
       redirect: false
@@ -25,9 +40,11 @@ export default class InputCi extends Component {
 
   handleSubmit(event) {
     axios
+    // Petición al api para obtener datos por CI
       .post(`${config.serverUrl}/api/register/voterpanel`, {
         ci: this.state.ci
       })
+      // Si se obtiene una respuesta y no un  error, se establece que redirect es true
       .then(response => {
         if (response.data.body) {
           this.setState(response.data.body);

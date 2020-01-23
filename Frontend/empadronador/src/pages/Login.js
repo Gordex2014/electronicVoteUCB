@@ -1,11 +1,24 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/*******************************
+ * Página login del empadronador
+ *******************************/
+
 import React, { Component } from "react";
-import axios from 'axios'
-import { Redirect } from 'react-router-dom'
+import axios from "axios";
+import { Redirect } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import setAuthorizationToken from "../utils/setAuthorizationToken";
 
-import config from '../utils/config'
+import config from "../utils/config";
 import ucbLogo from "../images/ucb_logo.png";
 
 export default class Login extends Component {
@@ -40,12 +53,12 @@ export default class Login extends Component {
         localStorage.setItem("jwtToken", token);
         setAuthorizationToken(token);
         this.setState({ redirect: true });
-      }).catch(e  => {
-          alert('No se encuentra autorizado')
+      })
+      .catch(e => {
+        alert("No se encuentra autorizado");
       });
     event.preventDefault();
   }
-
 
   render() {
     const redirect = this.state.redirect;

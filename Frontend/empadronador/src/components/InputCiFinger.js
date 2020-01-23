@@ -1,11 +1,28 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/*****************************************************************************************************
+ * Componente que se utiliza para la búsqueda por CI, en específico para registrar la huella dactilar
+ *****************************************************************************************************/
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from 'axios'
 
 import ucbLogo from "../images/ucb-imt-logo-two.png";
 
+// Utilidades
 import config from "../utils/config";
 import isTokenValid from "../utils/isTokenValid";
+
+
+// El componente es muy similar a la búsqueda normal por CI, solo que se vió conveniente incluir distintas
+// descripciones dentro de las etiquetas h3
 
 export default class InputCiFinger extends Component {
   constructor() {

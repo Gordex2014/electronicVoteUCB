@@ -1,11 +1,25 @@
+/************************************************************
+ * Código de aplicación correspondiente al proyecto de grado
+ * Álvaro Miguel Salinas Dockar
+ * Universidad Católica Boliviana "San Pablo"
+ * Ingeniería Mecatrónica
+ * La Paz - Bolivia, 2020
+ * App de empadronador
+ ***********************************************************/
+
+/******************************************
+ * Página para el registro de nuevo votante
+ ******************************************/
+
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 
-import config from '../utils/config'
 import Navbar from "../components/Navbar";
+
+import config from "../utils/config";
 import isTokenValid from "../utils/isTokenValid";
 import ImagePreview from "../utils/ImagePreview";
 
@@ -51,6 +65,7 @@ export default class Register extends Component {
     this.setState({ location: event.target.value });
   }
 
+  // Se registra al votante enviando todos los datos necesarios
   handleSubmit(event) {
     axios
       .post(`${config.serverUrl}/api/register/registervoter`, {
