@@ -123,7 +123,7 @@ router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
     .modifyVoter(modifiedVoter)
     .then(info => {
       if (!info.message) {
-        response.success(req, res, "Votante modificado correctamente", 204);
+        response.success(req, res, "Votante modificado correctamente", 200);
       } else {
         response.success(req, res, info.message, info.status);
       }

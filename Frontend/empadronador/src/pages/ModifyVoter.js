@@ -95,8 +95,14 @@ export default class ModifyVoter extends Component {
         this.setState({ redirect: true });
       })
       .catch(e => {
-        // Por si es que ingresan valores incoherentes
-        alert("Error de sintaxis");
+        // Si el error es de sintaxis solo se muestra la alerta
+        if(e.response.status === 400){
+          alert("Error de sintaxis")
+        }else{
+          // Si la sesión se expira, se redirecciona
+          alert("Sesión expirada")
+          window.location.replace(`${config.appUrl}`)
+        }
       });
     event.preventDefault();
   }
@@ -138,33 +144,33 @@ export default class ModifyVoter extends Component {
                   alt="Foto persona"
                 />
                 <div className="form-row">
-                  <div class="form-group container">
+                  <div className="form-group container">
                     <label className="mt-2 ml-2">Nombres: </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Nombre"
                       value={this.state.name}
                       onChange={this.handleChangeName}
                     />
                   </div>
-                  <div class="form-group container">
+                  <div className="form-group container">
                     <label className="mt-2 ml-2">Apellidos: </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Apellido"
                       value={this.state.lastname}
                       onChange={this.handleChangeLastname}
                     />
                   </div>
-                  <div class="form-group container">
+                  <div className="form-group container">
                     <label className="mt-2 ml-2">
                       Carn&eacute; de identidad:{" "}
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="CI"
                       value={this.state.ci}
                       onChange={this.handleChangeCi}
@@ -174,7 +180,7 @@ export default class ModifyVoter extends Component {
                     <label className="mt-2 ml-2">Ciudad: </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Ciudad"
                       value={this.state.city}
                       onChange={this.handleChangeCity}
@@ -186,7 +192,7 @@ export default class ModifyVoter extends Component {
                     </label>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       placeholder="Recinto"
                       value={this.state.location}
                       onChange={this.handleChangeLocation}
