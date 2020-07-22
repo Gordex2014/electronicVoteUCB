@@ -7,6 +7,7 @@
  *********************************************************/
 const imageDataURI = require("image-data-uri");
 var path = require("path");
+const keccakHash = require("keccak");
 
 const voterStore = require("../../voterSection/store/store");
 const profileStore = require("../store/store");
@@ -63,7 +64,7 @@ function addVoter(voterParams) {
 
   // Ingresar la imagen como archivo al servidor
   imageRoute = path.join(process.cwd(), `/public/votersPhotos/${ci}.jpg`);
-  imageDataURI.outputFile(dataUri, imageRoute).then(res => console.log(res));
+  imageDataURI.outputFile(dataUri, imageRoute).then((res) => console.log(res));
 
   // Ingreso a base de datos
   let newVoter = {
@@ -75,7 +76,7 @@ function addVoter(voterParams) {
     facial: false,
     fingerprint: false,
     emitedvote: false,
-    imgLocation: imageRoute
+    imgLocation: imageRoute,
   };
 
   // Interacción con la base de datos
@@ -139,7 +140,7 @@ function modifyVoter(voterParams) {
     ci: ciNumber,
     city,
     location,
-    oldCi
+    oldCi,
   };
 
   // Interacción con la base de datos
@@ -161,7 +162,7 @@ function deleteVoter(voterParams) {
 
   // Ingreso a base de datos
   let modifiedVoter = {
-    oldCi
+    oldCi,
   };
 
   // Interacción con la base de datos
@@ -209,7 +210,7 @@ function addProfile(profileParams) {
     lastname,
     organization,
     username,
-    password
+    password,
   };
 
   // Interacción con la base de datos
@@ -233,7 +234,7 @@ function authenticateProfile(profileLogin) {
 
   const profileParams = {
     username,
-    password
+    password,
   };
 
   // Interacción con la base de datos, se usa una promesa por asincronía
@@ -284,10 +285,212 @@ function saveFingerprint(ci, fingerprintCharacteristics) {
 
   let fingerMemoryVoter = {
     ci: ciNumber,
-    fingerprintCharacteristics: fingerprintCharacteristics
+    fingerprintCharacteristics: fingerprintCharacteristics,
   };
 
   return voterStore.addFingerprintCharacteristics(fingerMemoryVoter);
+}
+
+// Obtiene todos los usuarios de las bases de datos, los pone en una estructura de árboles de Merkle
+// y devuelve un array con estos datos, un hash por usuario
+async function processDataMerkleTrees() {
+  let voterHashes = [];
+  try {
+    const information = await voterStore.getAllInfo();
+    // Si no llega una respuesta de la base de datos, el error se debe a que aun no hay personas registradas o
+    // una caída de la base de datos
+    if (information.length === 0) {
+      return voterHashes;
+    } else {
+      // Si todo estuvo bien, se procede a hacer un recorrido por todos los usuarios del sistema de voto
+      for (let i = 0; i < information.length; i++) {
+        let hash = merkleTreesStructuring(information[i]);
+        // Si la respuesta no es nula, entonces se procede a agregarlo al array de hashes
+        if (hash != null) {
+          voterHashes.push(hash);
+        }
+      }
+      // Retorna el array con los hashes
+      return voterHashes;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Inicializa el periodo de elección
+async function configInit() {
+  const initEval = await profileStore.initElection();
+  let message, status;
+  let retObject = { message, status };
+  if (initEval === true) {
+    message = "Proceso electoral iniciado correctamente";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message =
+      "No se pudo inicializar el proceso electoral, por favor revise las configuraciones de la Base de Datos";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
+// Cambiar el periodo de empadronamiento a cerrado
+async function closeRegistration() {
+  const verificationVariable = await profileStore.closeRegistration();
+  let message, status;
+  let retObject = { message, status };
+  if (verificationVariable === true) {
+    message = "Se ha cerrado la etapa de empadronamiento correctamente";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message =
+      "No se pudo cerrar la etapa de empadronamiento, por favor revise las configuraciones de la Base de Datos";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
+// Cambiar el periodo de votación a cerrado
+async function closeElections() {
+  const verificationVariable = await profileStore.closeElections();
+  let message, status;
+  let retObject = { message, status };
+  if (verificationVariable == true) {
+    message = "Se ha cerrado la etapa de voto correctamente";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message =
+      "No se pudo cerrar la etapa de voto, por favor revise las configuraciones de la Base de Datos";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
+// Cambiar el periodo de votación a abierto //TODO: Agregar datos a blockchain
+async function openElections() {
+  const verificationVariable = await profileStore.openElections();
+  let message, status;
+  let retObject = { message, status };
+  if (verificationVariable === true) {
+    message = "Se ha abierto la etapa de voto correctamente";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message =
+      "No se pudo abrir la etapa de voto, por favor revise las configuraciones de la Base de Datos";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
+// Revisa si el registro está habilitado
+async function registrationPeriodChecker() {
+  const evaluationParam = await profileStore.registrationPeriodVerification();
+  return evaluationParam;
+}
+
+// Revisa si el periodo de votación está abierto
+async function votationPeriodChecker() {
+  const evaluationParam = await profileStore.votationPeriodVerification();
+  return evaluationParam;
+}
+
+/*************************
+ * Funciones de utilidad
+ ************************/
+
+function merkleTreesStructuring(data) {
+  // La información está estructurada de la siguiente manera:
+  //
+  //                H1
+  // -  name        ---------   R1
+  //                H2      !---------
+  // -  lastname    ---------        |   R5
+  //                H3               |---------
+  // -  ci          ---------   R2   |        |
+  //                H4      !---------        |
+  // -  facial      ---------                 |   HF
+  //                H5                        |--------- Hash Final
+  // -  city        ---------   R3            |
+  //                H6      !---------        |
+  // -  fingerprint ---------        |   R6   |
+  //                H7               |---------
+  // -  location    ---------   R4   |
+  //                H8      !---------
+  // -  emitedvote  ---------
+  //
+  // Cabe recalcar que se debe comprobar que facial, fingerprint y emitedvote queden en false para poder
+  // así evitar un cambio previo en la base de datos
+
+  let H1, H2, H3, H4, H5, H6, H7, H8, HF;
+  let R1, R2, R3, R4, R5, R6;
+
+  // Ver si argumentos que deben ser falsos, son falsos, además comprueba que la huella dactilar esté registrada
+  if (
+    (data.facial === true) |
+    (data.fingerprint === true) |
+    (data.emitedVote === true) |
+    (data.fingerprintCharacteristics.length === 0)
+  ) {
+    HF = null;
+  }
+
+  // Primera ronda
+  H1 = keccakHash("keccak256").update(data.name).digest("hex");
+  H2 = keccakHash("keccak256").update(data.lastname).digest("hex");
+  H3 = keccakHash("keccak256").update(data.ci.toString()).digest("hex");
+  H4 = keccakHash("keccak256").update(data.facial.toString()).digest("hex");
+  H5 = keccakHash("keccak256").update(data.city).digest("hex");
+  H6 = keccakHash("keccak256")
+    .update(data.fingerprint.toString())
+    .digest("hex");
+  H7 = keccakHash("keccak256").update(data.location).digest("hex");
+  H8 = keccakHash("keccak256").update(data.emitedvote.toString()).digest("hex");
+
+  // Segunda Ronda
+  R1 = keccakHash("keccak256")
+    .update(H1 + H2)
+    .digest("hex");
+  R2 = keccakHash("keccak256")
+    .update(H3 + H4)
+    .digest("hex");
+  R3 = keccakHash("keccak256")
+    .update(H5 + H6)
+    .digest("hex");
+  R4 = keccakHash("keccak256")
+    .update(H7 + H8)
+    .digest("hex");
+
+  // Tercera Ronda
+  R5 = keccakHash("keccak256")
+    .update(R1 + R2)
+    .digest("hex");
+  R6 = keccakHash("keccak256")
+    .update(R3 + R4)
+    .digest("hex");
+
+  // Hash Final
+
+  // Si HF no tiene un valor previo, se envía el valor
+  if (HF === null) {
+    return null;
+  } else {
+    HF = keccakHash("keccak256")
+      .update(R5 + R6)
+      .digest("hex");
+    return HF;
+  }
 }
 
 module.exports = {
@@ -297,5 +500,12 @@ module.exports = {
   getVoterPanel,
   modifyVoter,
   deleteVoter,
-  saveFingerprint
+  saveFingerprint,
+  processDataMerkleTrees,
+  registrationPeriodChecker,
+  votationPeriodChecker,
+  configInit,
+  closeRegistration,
+  closeElections,
+  openElections,
 };

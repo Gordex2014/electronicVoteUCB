@@ -28,7 +28,7 @@ router.post("/registerprofile", (req, res) => {
 
   registerController
     .addProfile(newProfile)
-    .then(info => {
+    .then((info) => {
       if (!info.message) {
         response.success(
           req,
@@ -40,7 +40,7 @@ router.post("/registerprofile", (req, res) => {
         response.success(req, res, info.message, info.status);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -56,7 +56,7 @@ router.post("/dashboard", verifyToken, validateToken, (req, res) => {
 
 router.post("/", (req, res) => {
   res.json({
-    message: "holaxd"
+    message: "holaxd",
   });
 });
 
@@ -65,7 +65,7 @@ router.post("/login", (req, res) => {
   const profileLogin = { username, password };
   registerController
     .authenticateProfile(profileLogin)
-    .then(profile => {
+    .then((profile) => {
       if (profile === null) {
         response.error(
           req,
@@ -84,12 +84,12 @@ router.post("/login", (req, res) => {
         );
       } else {
         const sendToken = jwt.sign({ profile }, config.secretKey, {
-          expiresIn: "10m"
+          expiresIn: "10m",
         });
         response.success(req, res, sendToken, 200);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -103,14 +103,14 @@ router.post("/registervoter", verifyToken, validateToken, (req, res) => {
   const newVoter = { name, lastname, ci, city, location, dataUri };
   registerController
     .addVoter(newVoter)
-    .then(info => {
+    .then((info) => {
       if (!info.message) {
         response.success(req, res, "Votante registrado correctamente", 201);
       } else {
         response.success(req, res, info.message, info.status);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -121,14 +121,14 @@ router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
   const modifiedVoter = { name, lastname, ci, city, location, oldCi };
   registerController
     .modifyVoter(modifiedVoter)
-    .then(info => {
+    .then((info) => {
       if (!info.message) {
         response.success(req, res, "Votante modificado correctamente", 200);
       } else {
         response.success(req, res, info.message, info.status);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -139,14 +139,14 @@ router.put("/registervoter", verifyToken, validateToken, (req, res) => {
   const oldVoter = { oldCi };
   registerController
     .deleteVoter(oldVoter)
-    .then(info => {
+    .then((info) => {
       if (!info.message) {
         response.success(req, res, "Votante eliminado correctamente", 204);
       } else {
         response.success(req, res, info.message, info.status);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -156,7 +156,7 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
   const { ci } = req.body;
   registerController
     .getVoterPanel(ci)
-    .then(info => {
+    .then((info) => {
       if (info === null) {
         response.error(
           req,
@@ -171,7 +171,7 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
         response.success(req, res, info, 200);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
@@ -194,7 +194,7 @@ router.put(
     }
     registerController
       .saveFingerprint(ci, characteristicsArray)
-      .then(info => {
+      .then((info) => {
         if (info === "No characteristics") {
           response.error(
             req,
@@ -217,11 +217,106 @@ router.put(
           response.success(req, res, "Huella registrada con éxito", 200);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         response.error(req, res, "Error inesperado", 500, e);
       });
   }
 );
+
+// Enviar los datos de los votantes al procesador de árboles de Merkle para luego ser
+// enviados a la base de datos descentralizada
+router.post("/merkletreesdata", async (req, res) => {
+  // Una vez se ha finalizado el periodo de registro, el administrador deberá llamar una función
+  // para terminar enviando un hash por votante, esto para proteger su información en la base de
+  // datos distribuída
+  let info;
+  try {
+    // Info contiene el array con los identificadores de los votantes
+    info = await registerController.processDataMerkleTrees();
+    // Se comprueba que el array de hashes no sea cero
+    if (info.length == 0) {
+      response.error(
+        req,
+        res,
+        "Error al procesar la información de los votantes",
+        503,
+        "Error al procesar la información de los votantes"
+      );
+    } else {
+      response.success(req, res, info, 200);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Inicializa los parámetros del proceso electoral
+router.post("/init", verifyToken, validateToken, async (req, res) => {
+  serverResponse = await registerController.configInit();
+  if (serverResponse.status === 200) {
+    response.success(req, res, serverResponse.message, serverResponse.status);
+  } else {
+    response.error(
+      req,
+      res,
+      serverResponse.message,
+      serverResponse.status,
+      serverResponse.message
+    );
+  }
+});
+
+// Cierra el periodo de empadronamiento
+router.put("/closeregistration", verifyToken, validateToken, registrationPeriodChecker, async (req, res) => {
+  serverResponse = await registerController.closeRegistration();
+  if (serverResponse.status === 200) {
+    response.success(req, res, serverResponse.message, serverResponse.status);
+  } else {
+    response.error(
+      req,
+      res,
+      serverResponse.message,
+      serverResponse.status,
+      serverResponse.message
+    );
+  }
+});
+
+// Abre el periodo de votación
+router.put("/openvotingperiod", verifyToken, validateToken, async (req, res) => {
+  serverResponse = await registerController.openElections();
+  if (serverResponse.status === 200) {
+    response.success(req, res, serverResponse.message, serverResponse.status);
+  } else {
+    response.error(
+      req,
+      res,
+      serverResponse.message,
+      serverResponse.status,
+      serverResponse.message
+    );
+  }
+});
+
+// Cierra el periodo de votación
+router.put("/closevotingperiod", verifyToken, validateToken, votationPeriodChecker, async (req, res) => {
+  serverResponse = await registerController.closeElections();
+  if (serverResponse.status === 200) {
+    response.success(req, res, serverResponse.message, serverResponse.status);
+  } else {
+    response.error(
+      req,
+      res,
+      serverResponse.message,
+      serverResponse.status,
+      serverResponse.message
+    );
+  }
+});
+
+/*************************
+ * Funciones intermedias
+ *************************/
 
 // Función de verificación de token, solamente comprueba de que exista un token
 // de verificación, no que sea auténtico
@@ -248,6 +343,47 @@ function validateToken(req, res, next) {
       next();
     }
   });
+}
+
+// Verificar si la temporada de registro sigue abierta
+async function registrationPeriodChecker(req, res, next) {
+  try {
+    const evaluationVar = await registerController.registrationPeriodChecker();
+    if (evaluationVar == true) {
+      console.log(evaluationVar)
+      next();
+    } else {
+      response.error(
+        req,
+        res,
+        "El periodo de empadronamiento ya terminó",
+        403,
+        "El periodo de empadronamiento ya terminó"
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+// Verificar si la temporada de registro sigue abierta
+async function votationPeriodChecker(req, res, next) {
+  try {
+    const evaluationVar = await registerController.votationPeriodChecker();
+    if (evaluationVar == true) {
+      next();
+    } else {
+      response.error(
+        req,
+        res,
+        "El periodo de votación ya terminó",
+        403,
+        "El periodo de votación ya terminó"
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = router;

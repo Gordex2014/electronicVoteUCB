@@ -19,13 +19,13 @@ import Navbar from "../components/Navbar";
 
 // Utilidades
 import isTokenValid from "../utils/isTokenValid";
-import config from '../utils/config'
+import config from "../utils/config";
 
 export default class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      tokenExpired: isTokenValid(localStorage.jwtToken)
+      tokenExpired: isTokenValid(localStorage.jwtToken),
     };
   }
 
@@ -33,11 +33,79 @@ export default class Dashboard extends Component {
   componentDidMount() {
     axios
       .post(`${config.serverUrl}/api/register/dashboard`)
-      .then(response => {
+      .then((response) => {
         if (response.data.body) {
           this.setState(response.data.body.profile);
         }
       });
+  }
+
+  // Inicialización de parámetros de configuración para la elección
+  handleParamInit(event) {
+    axios
+      .post(`${config.serverUrl}/api/register/init`)
+      .then((response) => {
+        if (response.data.body) {
+          alert(response.data.body);
+        } else {
+          alert(response.data.error);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    event.preventDefault();
+  }
+
+  // Cierre del periodo de empadronamiento
+  handleRegisterCloser(event) {
+    axios
+      .put(`${config.serverUrl}/api/register/closeregistration`)
+      .then((response) => {
+        if (response.data.body) {
+          alert(response.data.body);
+        } else {
+          alert(response.data.error);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    event.preventDefault();
+  }
+
+  // Apertura del periodo de votación
+  handleVotingOpen(event) {
+    axios
+      .put(`${config.serverUrl}/api/register/openvotingperiod`)
+      .then((response) => {
+        if (response.data.body) {
+          alert(response.data.body);
+        } else {
+          alert(response.data.error);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    event.preventDefault();
+  }
+
+  // Cierre del periodo de votación
+  handleVotingClose(event) {
+    axios
+      .put(`${config.serverUrl}/api/register/closevotingperiod`)
+      .then((response) => {
+        if (response.data.body) {
+          alert(response.data.body);
+        } else {
+          alert(response.data.error);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+    event.preventDefault();
   }
 
   render() {
@@ -79,23 +147,72 @@ export default class Dashboard extends Component {
           <div className="col-6">
             <div className="container">
               <div className="col-6 offset-3">
-                <Link to="/register" className="btn btn-secondary btn-block mt-5 mb-5">
+                <div
+                  onClick={this.handleParamInit}
+                  className="btn btn-info btn-block mt-5 mb-5"
+                >
+                  INICIALIZAR PARÁMETROS DE VOTACIÓN
+                </div>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <Link
+                  to="/register"
+                  className="btn btn-secondary btn-block mt-5 mb-5"
+                >
                   Empadronar votante
                 </Link>
               </div>
             </div>
             <div className="container">
               <div className="col-6 offset-3">
-                <Link to="/registerfingerbyci" className="btn btn-secondary btn-block mt-5 mb-5">
+                <Link
+                  to="/registerfingerbyci"
+                  className="btn btn-secondary btn-block mt-5 mb-5"
+                >
                   Registrar huella dactilar
                 </Link>
               </div>
             </div>
             <div className="container">
               <div className="col-6 offset-3">
-                <Link to="/findvoter" className="btn btn-secondary btn-block mt-5 mb-5">
+                <Link
+                  to="/findvoter"
+                  className="btn btn-secondary btn-block mt-5 mb-5"
+                >
                   Depurar votante
                 </Link>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <div
+                  onClick={this.handleRegisterCloser}
+                  className="btn btn-warning btn-block mt-5 mb-5"
+                >
+                  CERRAR PERIODO DE EMPADRONAMIENTO
+                </div>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <div
+                  onClick={this.handleVotingOpen}
+                  className="btn btn-success btn-block mt-5 mb-5"
+                >
+                  ABRIR PERIODO DE VOTACIÓN
+                </div>
+              </div>
+            </div>
+            <div className="container">
+              <div className="col-6 offset-3">
+                <div
+                  onClick={this.handleVotingClose}
+                  className="btn btn-warning btn-block mt-5 mb-5"
+                >
+                  CERRAR PERIODO DE VOTACIÓN
+                </div>
               </div>
             </div>
           </div>
