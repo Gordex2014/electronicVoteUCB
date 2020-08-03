@@ -1,0 +1,34 @@
+#############################################
+# Archivo de configuración para generación
+# de material criptográfico
+# Álvaro Miguel Salinas Dockar
+# Universidad Católica Boliviana "San Pablo"
+# La Paz - Bolivia, 2020
+#############################################
+
+OrdererOrgs:
+  - Name: Orderer
+    Domain: ucb.com
+    Specs:
+      - Hostname: orderer
+      
+PeerOrgs:
+  - Name: ucb
+    Domain: ucb.com
+    Specs:
+      - Hostname: devpeer
+        CommonName: devpeer
+    Users:
+      Count: 1
+
+  - Name: audit
+    Domain: audit.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: devpeer
+        CommonName: devpeer
+    Users:
+      Count: 1
+
+
+      

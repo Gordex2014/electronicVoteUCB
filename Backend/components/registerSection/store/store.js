@@ -63,15 +63,7 @@ async function closeRegistration() {
 // Cambiar el valor de periodo de elecciones a "abierto"
 async function openElections() {
   const registrationValue = await Config.findOne({ role: "administrator" });
-  if (
-    registrationValue.votationPeriod === true &&
-    registrationValue.dataOnBlockchain === true
-  ) {
-    return false;
-  } else if (
-    registrationValue.votationPeriod === false &&
-    registrationValue.dataOnBlockchain === true
-  ) {
+  if (registrationValue.dataOnBlockchain === true) {
     return false;
   } else {
     registrationValue.votationPeriod = true;

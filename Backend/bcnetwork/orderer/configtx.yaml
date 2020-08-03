@@ -1,0 +1,268 @@
+
+#############################################
+# Archivo de configuración para políticas de
+# transacciones y configuraciones iniciales
+# Álvaro Miguel Salinas Dockar
+# Universidad Católica Boliviana "San Pablo"
+# La Paz - Bolivia, 2020
+#############################################
+
+Capabilities:
+  Application: &ApplicationCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Channel: &ChannelCapabilities
+    V2_0: true
+
+# ORGANIZACIONES
+Organizations:
+  - &Orderer
+    Name: Orderer
+    ID: OrdererMSP
+    MSPDir: ./crypto-config/ordererOrganizations/ucb.com/msp
+    Policies: &OrdererPolicies
+      Readers:
+          Type: Signature
+          Rule: "OR('OrdererMSP.member')"
+      Writers:
+          Type: Signature
+          Rule: "OR('OrdererMSP.member')"
+      Admins:
+          Type: Signature
+          # Solamente roles administrativos pueden llevar a cabo acciones administrativas
+          Rule: "OR('OrdererMSP.member')"
+      Endorsement:
+          Type: Signature
+          Rule: "OR('OrdererMSP.member')"
+
+  - &Ucb
+    Name: Ucb
+    ID: UcbMSP
+    MSPDir: ./crypto-config/peerOrganizations/ucb.com/msp
+    Policies: &UcbPolicies
+      Readers:
+          Type: Signature
+          # Cualquier miembro puede realizar lecturas, ej. Query
+          Rule: "OR('UcbMSP.member')"
+      Writers:
+          Type: Signature
+          # Cualquier miembro puede realizar escrituras, ej. Invoke
+          Rule: "OR('UcbMSP.member')"
+      Admins:
+          Type: Signature
+          # Admin de ucb o admin de orderer pueden realizar acciones administrativas
+          Rule: "OR('UcbMSP.member','OrdererMSP.admin')"
+      Endorsement:
+          Type: Signature
+          # Cualquier miembro puede actuar como endoser
+          Rule: "OR('UcbMSP.member')"
+    AnchorPeers:
+      - Host: peer1.ucb.com
+        Port: 7051
+
+  - &Audit
+    Name: Audit
+    ID: AuditMSP
+    MSPDir: ./crypto-config/peerOrganizations/audit.com/msp
+    Policies: &AuditPolicies
+      Readers:
+          Type: Signature
+          Rule: "OR('AuditMSP.member')"
+      Writers:
+          Type: Signature
+          Rule: "OR('AuditMSP.member')"
+      Admins:
+          Type: Signature
+          # Admin de audit o admin de orderer pueden realizar acciones administrativas
+          Rule: "AND('AuditMSP.member','OrdererMSP.admin')"
+      Endorsement:
+          Type: Signature
+          Rule: "OR('AuditMSP.member')"
+    AnchorPeers:
+      - Host: peer1.audit.com
+        Port: 8051
+
+#   ORDERER
+Orderer: &OrdererDefaults
+
+  OrdererType: solo
+
+  Addresses:
+    - localhost:7050
+  Policies:
+    Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+    Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+    Admins:
+        Type: ImplicitMeta  
+        Rule: "ANY Admins"
+    BlockValidation:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+
+  BatchTimeout: 2s
+
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 98 MB
+    PreferredMaxBytes: 512 KB
+
+  Capabilities:
+    <<: *OrdererCapabilities
+
+Application: &ApplicationDefaults
+
+  ACLs: &ACLsDefault
+
+    # Configuraciones básicas de aplicación por defecto
+
+    # ACL policy for lscc's "getid" function
+    lscc/ChaincodeExists: /Channel/Application/Readers
+
+    # ACL policy for lscc's "getdepspec" function
+    lscc/GetDeploymentSpec: /Channel/Application/Readers
+
+    # ACL policy for lscc's "getccdata" function
+    lscc/GetChaincodeData: /Channel/Application/Readers
+
+    # ACL Policy for lscc's "getchaincodes" function
+    lscc/GetInstantiatedChaincodes: /Channel/Application/Readers
+
+    #---Query System Chaincode (qscc) function to policy mapping for access control---#
+
+    # ACL policy for qscc's "GetChainInfo" function
+    qscc/GetChainInfo: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetBlockByNumber" function
+    qscc/GetBlockByNumber: /Channel/Application/Readers
+
+    # ACL policy for qscc's  "GetBlockByHash" function
+    qscc/GetBlockByHash: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetTransactionByID" function
+    qscc/GetTransactionByID: /Channel/Application/Readers
+
+    # ACL policy for qscc's "GetBlockByTxID" function
+    qscc/GetBlockByTxID: /Channel/Application/Readers
+
+    #---Configuration System Chaincode (cscc) function to policy mapping for access control---#
+
+    # ACL policy for cscc's "GetConfigBlock" function
+    cscc/GetConfigBlock: /Channel/Application/Readers
+
+    # ACL policy for cscc's "GetConfigTree" function
+    cscc/GetConfigTree: /Channel/Application/Readers
+
+    # ACL policy for cscc's "SimulateConfigTreeUpdate" function
+    cscc/SimulateConfigTreeUpdate: /Channel/Application/Readers
+
+    #---Miscellanesous peer function to policy mapping for access control---#
+
+    # ACL policy for invoking chaincodes on peer
+    peer/Propose: /Channel/Application/Writers
+
+    # ACL policy for chaincode to chaincode invocation
+    peer/ChaincodeToChaincode: /Channel/Application/Readers
+
+    #---Events resource to policy mapping for access control###---#
+
+    # ACL policy for sending block events
+    event/Block: /Channel/Application/Readers
+
+    # ACL policy for sending filtered block events
+    event/FilteredBlock: /Channel/Application/Readers
+
+    # Chaincode Lifecycle Policies introduced in Fabric 2.x
+    # ACL policy for _lifecycle's "CheckCommitReadiness" function
+    _lifecycle/CheckCommitReadiness: /Channel/Application/Writers
+
+    # ACL policy for _lifecycle's "CommitChaincodeDefinition" function
+    _lifecycle/CommitChaincodeDefinition: /Channel/Application/Writers
+
+    # ACL policy for _lifecycle's "QueryChaincodeDefinition" function
+    _lifecycle/QueryChaincodeDefinition: /Channel/Application/Readers
+
+    # ACL policy for _lifecycle's "QueryChaincodeDefinitions" function
+    _lifecycle/QueryChaincodeDefinitions: /Channel/Application/Readers
+
+  Policies: &ApplicationDefaultPolicies
+
+    Endorsement:
+        Type: ImplicitMeta
+        Rule: "ANY Endorsement"
+    Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+    Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+    Admins:
+        Type: ImplicitMeta
+        Rule: "ANY Admins"
+
+    LifecycleEndorsement:
+        Type: ImplicitMeta
+        Rule: "ANY Endorsement"
+
+  Organizations:
+
+  Capabilities:
+    <<: *ApplicationCapabilities
+ 
+
+#   CANALES
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+        Type: ImplicitMeta
+        Rule: "ANY Readers"
+    Writers:
+        Type: ImplicitMeta
+        Rule: "ANY Writers"
+    Admins:
+        Type: ImplicitMeta
+        Rule: "ANY Admins"
+
+  Capabilities:
+    <<: *ChannelCapabilities
+
+  
+#   PERFILES
+Profiles:
+
+  VotingOrdererGenesis:
+      <<: *ChannelDefaults
+      Orderer:
+          <<: *OrdererDefaults
+          Organizations:
+              - <<: *Orderer
+      Consortiums:
+        VotingConsortium:
+            Organizations:
+                  - <<: *Ucb
+                  - <<: *Audit
+      Application:
+            <<: *ApplicationDefaults
+
+            Organizations:
+                - <<: *Ucb
+                - <<: *Audit                       
+                  
+  VotingChannel:
+    <<: *ChannelDefaults
+    Consortium: VotingConsortium
+        
+    Application:
+        <<: *ApplicationDefaults
+        
+        Organizations:
+            - <<: *Ucb
+            - <<: *Audit
+        
+
+
+  

@@ -1,0 +1,1 @@
+Copiar la carpeta evoting al gopath, usualmente en /home/$USER/go/src

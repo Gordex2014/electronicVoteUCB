@@ -293,7 +293,7 @@ function saveFingerprint(ci, fingerprintCharacteristics) {
 
 // Obtiene todos los usuarios de las bases de datos, los pone en una estructura de árboles de Merkle
 // y devuelve un array con estos datos, un hash por usuario
-async function processDataMerkleTrees() {
+async function processAllDataMerkleTrees() {
   let voterHashes = [];
   try {
     const information = await voterStore.getAllInfo();
@@ -310,8 +310,9 @@ async function processDataMerkleTrees() {
           voterHashes.push(hash);
         }
       }
-      // Retorna el array con los hashes
-      return voterHashes;
+      // Convierte el array de hashes en un string y lo retorna
+      const stringHashes = voterHashes.toString()
+      return stringHashes;
     }
   } catch (error) {
     console.log(error);
@@ -420,15 +421,15 @@ function merkleTreesStructuring(data) {
   //                H3               |---------
   // -  ci          ---------   R2   |        |
   //                H4      !---------        |
-  // -  facial      ---------                 |   HF
+  // -              ---------                 |   HF
   //                H5                        |--------- Hash Final
   // -  city        ---------   R3            |
   //                H6      !---------        |
-  // -  fingerprint ---------        |   R6   |
+  // -              ---------        |   R6   |
   //                H7               |---------
   // -  location    ---------   R4   |
   //                H8      !---------
-  // -  emitedvote  ---------
+  // -              ---------
   //
   // Cabe recalcar que se debe comprobar que facial, fingerprint y emitedvote queden en false para poder
   // así evitar un cambio previo en la base de datos
@@ -436,11 +437,8 @@ function merkleTreesStructuring(data) {
   let H1, H2, H3, H4, H5, H6, H7, H8, HF;
   let R1, R2, R3, R4, R5, R6;
 
-  // Ver si argumentos que deben ser falsos, son falsos, además comprueba que la huella dactilar esté registrada
+  // Comprueba que la huella dactilar esté registrada
   if (
-    (data.facial === true) |
-    (data.fingerprint === true) |
-    (data.emitedVote === true) |
     (data.fingerprintCharacteristics.length === 0)
   ) {
     HF = null;
@@ -450,26 +448,21 @@ function merkleTreesStructuring(data) {
   H1 = keccakHash("keccak256").update(data.name).digest("hex");
   H2 = keccakHash("keccak256").update(data.lastname).digest("hex");
   H3 = keccakHash("keccak256").update(data.ci.toString()).digest("hex");
-  H4 = keccakHash("keccak256").update(data.facial.toString()).digest("hex");
   H5 = keccakHash("keccak256").update(data.city).digest("hex");
-  H6 = keccakHash("keccak256")
-    .update(data.fingerprint.toString())
-    .digest("hex");
   H7 = keccakHash("keccak256").update(data.location).digest("hex");
-  H8 = keccakHash("keccak256").update(data.emitedvote.toString()).digest("hex");
 
   // Segunda Ronda
   R1 = keccakHash("keccak256")
     .update(H1 + H2)
     .digest("hex");
   R2 = keccakHash("keccak256")
-    .update(H3 + H4)
+    .update(H3)
     .digest("hex");
   R3 = keccakHash("keccak256")
-    .update(H5 + H6)
+    .update(H5)
     .digest("hex");
   R4 = keccakHash("keccak256")
-    .update(H7 + H8)
+    .update(H7)
     .digest("hex");
 
   // Tercera Ronda
@@ -501,7 +494,7 @@ module.exports = {
   modifyVoter,
   deleteVoter,
   saveFingerprint,
-  processDataMerkleTrees,
+  processAllDataMerkleTrees,
   registrationPeriodChecker,
   votationPeriodChecker,
   configInit,

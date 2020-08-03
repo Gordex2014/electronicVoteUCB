@@ -225,14 +225,14 @@ router.put(
 
 // Enviar los datos de los votantes al procesador de árboles de Merkle para luego ser
 // enviados a la base de datos descentralizada
-router.post("/merkletreesdata", async (req, res) => {
+router.post("/retrieveallmerkletreesdata", async (req, res) => {
   // Una vez se ha finalizado el periodo de registro, el administrador deberá llamar una función
   // para terminar enviando un hash por votante, esto para proteger su información en la base de
   // datos distribuída
   let info;
   try {
     // Info contiene el array con los identificadores de los votantes
-    info = await registerController.processDataMerkleTrees();
+    info = await registerController.processAllDataMerkleTrees();
     // Se comprueba que el array de hashes no sea cero
     if (info.length == 0) {
       response.error(

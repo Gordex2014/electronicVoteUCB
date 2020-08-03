@@ -1,0 +1,80 @@
+#############################################
+# Archivo de configuración para el orderer
+# Álvaro Miguel Salinas Dockar
+# Universidad Católica Boliviana "San Pablo"
+# La Paz - Bolivia, 2020
+#############################################
+
+General:
+
+    BootstrapMethod: file
+
+    BootstrapFile: ./voting-genesis.block
+
+    BCCSP:
+        Default: SW
+        SW:
+            HASH: SHA2
+            Security: 256
+            FileKeyStore:
+                Keystore:
+
+    LocalMSPDir: ./crypto-config/ordererOrganizations/ucb.com/orderers/orderer.ucb.com/msp
+    
+    LocalMSPID: OrdererMSP
+
+    ListenAddress: 0.0.0.0
+
+    ListenPort: 7050
+
+    Cluster:
+        SendBufferSize: 10
+        ClientCertificate:
+        ClientPrivateKey:
+        ListenPort:
+        ListenAddress:
+        ServerCertificate:
+        ServerPrivateKey:
+
+    Keepalive:
+        ServerMinInterval: 60s
+        ServerInterval: 7200s
+        ServerTimeout: 20s
+
+    TLS:
+        Enabled: false
+        PrivateKey: ./server.key
+        Certificate: ./server.crt
+        RootCAs:
+          - ./ca.crt
+        ClientAuthRequired: false
+        ClientRootCAs:
+
+FileLedger:
+    Location: ./ledgers/orderer/voting/ledger
+    Prefix: hyperledger-fabric-ordererledger    
+
+
+Debug:
+    BroadcastTraceDir: 
+    DeliverTraceDir:
+
+Operations:
+    ListenAddress: 127.0.0.1:8443
+    TLS:
+        Enabled: false
+        Certificate:
+        PrivateKey:
+        ClientAuthRequired: false
+        RootCAs: []
+Metrics:
+    Provider: disabled
+    Statsd:
+      Network: udp
+      Address: 127.0.0.1:8125
+      WriteInterval: 30s
+      Prefix:
+
+Consensus:
+    WALDir: /var/hyperledger/production/orderer/etcdraft/wal
+    SnapDir: /var/hyperledger/production/orderer/etcdraft/snapshot
