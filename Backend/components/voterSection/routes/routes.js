@@ -19,6 +19,7 @@ const response = require("../../../network/response");
 const config = require("../../../config");
 const voterController = require("../controllers/voterController");
 const faceVerification = require("../controllers/faceLogic/faceVerification");
+const registerController = require("../../registerSection/controllers/registerController")
 
 const router = express.Router();
 
@@ -51,7 +52,7 @@ router.post("/ci", (req, res) => {
 });
 
 // Obtiene el panel de votante una vez se ha logeado con el CI
-router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
+router.post("/voterpanel", verifyToken, validateToken, votationPeriodChecker, (req, res) => {
   const { ci } = req.body;
   voterController
     .getVoterPanel(ci)
@@ -77,7 +78,7 @@ router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
 });
 
 // Obtener la respuesta de verificación de coincidencia de rostros
-router.post("/faceverification", verifyToken, validateToken, (req, res) => {
+router.post("/faceverification", verifyToken, validateToken, votationPeriodChecker, (req, res) => {
   const { ci, testImg } = req.body;
   faceVerification
     .verification(ci, testImg)
@@ -99,6 +100,7 @@ router.post(
   "/fingerverification",
   verifyToken,
   validateToken,
+  votationPeriodChecker,
   async (req, res) => {
     let errorStatus = {};
     const { ci } = req.body;
@@ -172,6 +174,34 @@ function validateToken(req, res, next) {
       next();
     }
   });
+}
+
+// Verificar si la temporada de voto sigue abierta, true para abierta
+async function votationPeriodChecker(req, res, next) {
+  try {
+    const evaluationVar = await registerController.votationPeriodChecker();
+    if (evaluationVar == true) {
+      next();
+    } else if (evaluationVar == null) {
+      response.error(
+        req,
+        res,
+        "No se ha inicializado la votación",
+        403,
+        "No se ha inicializado la votación"
+      );
+    } else {
+      response.error(
+        req,
+        res,
+        "El periodo de votación ya terminó",
+        403,
+        "El periodo de votación ya terminó"
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = router;

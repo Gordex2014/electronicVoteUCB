@@ -11,6 +11,8 @@ const keccakHash = require("keccak");
 
 const voterStore = require("../../voterSection/store/store");
 const profileStore = require("../store/store");
+const gateway = require("../blockchain/gateway");
+const addToWallet = require("../blockchain/addToWallet");
 
 // Función para agregar nuevo votante, previamente controlados los ingresos
 function addVoter(voterParams) {
@@ -311,7 +313,7 @@ async function processAllDataMerkleTrees() {
         }
       }
       // Convierte el array de hashes en un string y lo retorna
-      const stringHashes = voterHashes.toString()
+      const stringHashes = voterHashes.toString();
       return stringHashes;
     }
   } catch (error) {
@@ -321,10 +323,11 @@ async function processAllDataMerkleTrees() {
 
 // Inicializa el periodo de elección
 async function configInit() {
+  const walletEval = await addToWallet.addToWallet();
   const initEval = await profileStore.initElection();
   let message, status;
   let retObject = { message, status };
-  if (initEval === true) {
+  if (initEval === true && walletEval === true) {
     message = "Proceso electoral iniciado correctamente";
     status = 200;
     retObject = { message, status };
@@ -341,9 +344,11 @@ async function configInit() {
 // Cambiar el periodo de empadronamiento a cerrado
 async function closeRegistration() {
   const verificationVariable = await profileStore.closeRegistration();
+  const userHashesString = await processAllDataMerkleTrees();
+  const addEval = await gateway.addNewVoters(userHashesString);
   let message, status;
   let retObject = { message, status };
-  if (verificationVariable === true) {
+  if (verificationVariable === true && addEval === true) {
     message = "Se ha cerrado la etapa de empadronamiento correctamente";
     status = 200;
     retObject = { message, status };
@@ -360,9 +365,10 @@ async function closeRegistration() {
 // Cambiar el periodo de votación a cerrado
 async function closeElections() {
   const verificationVariable = await profileStore.closeElections();
+  const closeBcEval = await gateway.closeElection()
   let message, status;
   let retObject = { message, status };
-  if (verificationVariable == true) {
+  if (verificationVariable == true && closeBcEval == true) {
     message = "Se ha cerrado la etapa de voto correctamente";
     status = 200;
     retObject = { message, status };
@@ -379,9 +385,10 @@ async function closeElections() {
 // Cambiar el periodo de votación a abierto //TODO: Agregar datos a blockchain
 async function openElections() {
   const verificationVariable = await profileStore.openElections();
+  const openBcEval = await gateway.openElection()
   let message, status;
   let retObject = { message, status };
-  if (verificationVariable === true) {
+  if (verificationVariable == true && openBcEval == true) {
     message = "Se ha abierto la etapa de voto correctamente";
     status = 200;
     retObject = { message, status };
@@ -405,6 +412,46 @@ async function registrationPeriodChecker() {
 async function votationPeriodChecker() {
   const evaluationParam = await profileStore.votationPeriodVerification();
   return evaluationParam;
+}
+
+/*******************************************
+ * Funciones relacionadas con el blockchain
+ ******************************************/
+
+async function testBlockchain() {
+  const testEval = await gateway.testFunc();
+  let message, status;
+  let retObject = { message, status };
+  if (testEval === true) {
+    message = "Test aprobado";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message = "Test fallido, algo pasa";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
+// Agregar a todos los votantes
+async function addNewVotersBlockchain() {
+  const userHashesString = await processAllDataMerkleTrees();
+  const addEval = await gateway.addNewVoters(userHashesString);
+  let message, status;
+  let retObject = { message, status };
+  if (addEval === true) {
+    message = "Todos los votantes fueron agregados";
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message = "Fallo al agregar votantes al blockchain";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  }
 }
 
 /*************************
@@ -438,9 +485,7 @@ function merkleTreesStructuring(data) {
   let R1, R2, R3, R4, R5, R6;
 
   // Comprueba que la huella dactilar esté registrada
-  if (
-    (data.fingerprintCharacteristics.length === 0)
-  ) {
+  if (data.fingerprintCharacteristics.length === 0) {
     HF = null;
   }
 
@@ -455,15 +500,9 @@ function merkleTreesStructuring(data) {
   R1 = keccakHash("keccak256")
     .update(H1 + H2)
     .digest("hex");
-  R2 = keccakHash("keccak256")
-    .update(H3)
-    .digest("hex");
-  R3 = keccakHash("keccak256")
-    .update(H5)
-    .digest("hex");
-  R4 = keccakHash("keccak256")
-    .update(H7)
-    .digest("hex");
+  R2 = keccakHash("keccak256").update(H3).digest("hex");
+  R3 = keccakHash("keccak256").update(H5).digest("hex");
+  R4 = keccakHash("keccak256").update(H7).digest("hex");
 
   // Tercera Ronda
   R5 = keccakHash("keccak256")
@@ -501,4 +540,6 @@ module.exports = {
   closeRegistration,
   closeElections,
   openElections,
+  testBlockchain,
+  addNewVotersBlockchain,
 };

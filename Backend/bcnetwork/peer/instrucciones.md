@@ -29,6 +29,8 @@ Inicializar el entorno
   ./chaincode-install-appr.sh audit
   ./chaincode-commit.sh
 
+- Al momento de iniciar nuevamente es necesario borrar manualmente la carpeta 'user-wallet' en la raíz de Backend y la colección config en la base de datos
+
 Configurar entorno
 ===================
 Configurar variables de entorno de las respectivas organizaciones

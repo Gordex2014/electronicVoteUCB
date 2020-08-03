@@ -98,89 +98,114 @@ router.post("/login", (req, res) => {
  * Empieza la administración del votante, sea registro, cambio de nombre, y demás
  ***********************************************************************************/
 
-router.post("/registervoter", verifyToken, validateToken, (req, res) => {
-  const { name, lastname, ci, city, location, dataUri } = req.body; //TODO: add photo and fingerprint
-  const newVoter = { name, lastname, ci, city, location, dataUri };
-  registerController
-    .addVoter(newVoter)
-    .then((info) => {
-      if (!info.message) {
-        response.success(req, res, "Votante registrado correctamente", 201);
-      } else {
-        response.success(req, res, info.message, info.status);
-      }
-    })
-    .catch((e) => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.post(
+  "/registervoter",
+  verifyToken,
+  validateToken,
+  registrationPeriodChecker,
+  (req, res) => {
+    const { name, lastname, ci, city, location, dataUri } = req.body; //TODO: add photo and fingerprint
+    const newVoter = { name, lastname, ci, city, location, dataUri };
+    registerController
+      .addVoter(newVoter)
+      .then((info) => {
+        if (!info.message) {
+          response.success(req, res, "Votante registrado correctamente", 201);
+        } else {
+          response.success(req, res, info.message, info.status);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Modificar votante de la base de datos
-router.patch("/registervoter", verifyToken, validateToken, (req, res) => {
-  const { name, lastname, ci, city, location, oldCi } = req.body; //TODO: add fingerprint
-  const modifiedVoter = { name, lastname, ci, city, location, oldCi };
-  registerController
-    .modifyVoter(modifiedVoter)
-    .then((info) => {
-      if (!info.message) {
-        response.success(req, res, "Votante modificado correctamente", 200);
-      } else {
-        response.success(req, res, info.message, info.status);
-      }
-    })
-    .catch((e) => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.patch(
+  "/registervoter",
+  verifyToken,
+  validateToken,
+  registrationPeriodChecker,
+  (req, res) => {
+    const { name, lastname, ci, city, location, oldCi } = req.body; //TODO: add fingerprint
+    const modifiedVoter = { name, lastname, ci, city, location, oldCi };
+    registerController
+      .modifyVoter(modifiedVoter)
+      .then((info) => {
+        if (!info.message) {
+          response.success(req, res, "Votante modificado correctamente", 200);
+        } else {
+          response.success(req, res, info.message, info.status);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Borrar votante de la base de datos
-router.put("/registervoter", verifyToken, validateToken, (req, res) => {
-  const { oldCi } = req.body; //TODO: add fingerprint
-  const oldVoter = { oldCi };
-  registerController
-    .deleteVoter(oldVoter)
-    .then((info) => {
-      if (!info.message) {
-        response.success(req, res, "Votante eliminado correctamente", 204);
-      } else {
-        response.success(req, res, info.message, info.status);
-      }
-    })
-    .catch((e) => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.put(
+  "/registervoter",
+  verifyToken,
+  validateToken,
+  registrationPeriodChecker,
+  (req, res) => {
+    const { oldCi } = req.body; //TODO: add fingerprint
+    const oldVoter = { oldCi };
+    registerController
+      .deleteVoter(oldVoter)
+      .then((info) => {
+        if (!info.message) {
+          response.success(req, res, "Votante eliminado correctamente", 204);
+        } else {
+          response.success(req, res, info.message, info.status);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Se encuentra al votante en la base de datos
-router.post("/voterpanel", verifyToken, validateToken, (req, res) => {
-  const { ci } = req.body;
-  registerController
-    .getVoterPanel(ci)
-    .then((info) => {
-      if (info === null) {
-        response.error(
-          req,
-          res,
-          "Votante no encontrado",
-          400,
-          "No se ha encontrado al votante por ci"
-        );
-      } else if (!info.ci) {
-        response.error(req, res, info.message, info.status, info.message);
-      } else {
-        response.success(req, res, info, 200);
-      }
-    })
-    .catch((e) => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.post(
+  "/voterpanel",
+  verifyToken,
+  validateToken,
+  registrationPeriodChecker,
+  (req, res) => {
+    const { ci } = req.body;
+    registerController
+      .getVoterPanel(ci)
+      .then((info) => {
+        if (info === null) {
+          response.error(
+            req,
+            res,
+            "Votante no encontrado",
+            400,
+            "No se ha encontrado al votante por ci"
+          );
+        } else if (!info.ci) {
+          response.error(req, res, info.message, info.status, info.message);
+        } else {
+          response.success(req, res, info, 200);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Se agrega las características de la huella dactilar del votante a la base de datos
 router.put(
   "/voterfingerprint",
   verifyToken,
   validateToken,
+  registrationPeriodChecker,
   async (req, res) => {
     const { ci } = req.body;
     let characteristicsArray = undefined;
@@ -225,30 +250,35 @@ router.put(
 
 // Enviar los datos de los votantes al procesador de árboles de Merkle para luego ser
 // enviados a la base de datos descentralizada
-router.post("/retrieveallmerkletreesdata", async (req, res) => {
-  // Una vez se ha finalizado el periodo de registro, el administrador deberá llamar una función
-  // para terminar enviando un hash por votante, esto para proteger su información en la base de
-  // datos distribuída
-  let info;
-  try {
-    // Info contiene el array con los identificadores de los votantes
-    info = await registerController.processAllDataMerkleTrees();
-    // Se comprueba que el array de hashes no sea cero
-    if (info.length == 0) {
-      response.error(
-        req,
-        res,
-        "Error al procesar la información de los votantes",
-        503,
-        "Error al procesar la información de los votantes"
-      );
-    } else {
-      response.success(req, res, info, 200);
+router.post(
+  "/retrieveallmerkletreesdata",
+  verifyToken,
+  validateToken,
+  async (req, res) => {
+    // Una vez se ha finalizado el periodo de registro, el administrador deberá llamar una función
+    // para terminar enviando un hash por votante, esto para proteger su información en la base de
+    // datos distribuída
+    let info;
+    try {
+      // Info contiene el array con los identificadores de los votantes
+      info = await registerController.processAllDataMerkleTrees();
+      // Se comprueba que el array de hashes no sea cero
+      if (info.length == 0) {
+        response.error(
+          req,
+          res,
+          "Error al procesar la información de los votantes",
+          503,
+          "Error al procesar la información de los votantes"
+        );
+      } else {
+        response.success(req, res, info, 200);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-});
+);
 
 // Inicializa los parámetros del proceso electoral
 router.post("/init", verifyToken, validateToken, async (req, res) => {
@@ -267,50 +297,117 @@ router.post("/init", verifyToken, validateToken, async (req, res) => {
 });
 
 // Cierra el periodo de empadronamiento
-router.put("/closeregistration", verifyToken, validateToken, registrationPeriodChecker, async (req, res) => {
-  serverResponse = await registerController.closeRegistration();
-  if (serverResponse.status === 200) {
-    response.success(req, res, serverResponse.message, serverResponse.status);
-  } else {
-    response.error(
-      req,
-      res,
-      serverResponse.message,
-      serverResponse.status,
-      serverResponse.message
-    );
+router.put(
+  "/closeregistration",
+  verifyToken,
+  validateToken,
+  registrationPeriodChecker,
+  async (req, res) => {
+    serverResponse = await registerController.closeRegistration();
+    if (serverResponse.status === 200) {
+      response.success(req, res, serverResponse.message, serverResponse.status);
+    } else {
+      response.error(
+        req,
+        res,
+        serverResponse.message,
+        serverResponse.status,
+        serverResponse.message
+      );
+    }
   }
-});
+);
 
 // Abre el periodo de votación
-router.put("/openvotingperiod", verifyToken, validateToken, async (req, res) => {
-  serverResponse = await registerController.openElections();
-  if (serverResponse.status === 200) {
-    response.success(req, res, serverResponse.message, serverResponse.status);
-  } else {
-    response.error(
-      req,
-      res,
-      serverResponse.message,
-      serverResponse.status,
-      serverResponse.message
-    );
+router.put(
+  "/openvotingperiod",
+  verifyToken,
+  validateToken,
+  async (req, res) => {
+    serverResponse = await registerController.openElections();
+    if (serverResponse.status === 200) {
+      response.success(req, res, serverResponse.message, serverResponse.status);
+    } else {
+      response.error(
+        req,
+        res,
+        serverResponse.message,
+        serverResponse.status,
+        serverResponse.message
+      );
+    }
+  }
+);
+
+// Cierra el periodo de votación
+router.put(
+  "/closevotingperiod",
+  verifyToken,
+  validateToken,
+  votationPeriodChecker,
+  async (req, res) => {
+    serverResponse = await registerController.closeElections();
+    if (serverResponse.status === 200) {
+      response.success(req, res, serverResponse.message, serverResponse.status);
+    } else {
+      response.error(
+        req,
+        res,
+        serverResponse.message,
+        serverResponse.status,
+        serverResponse.message
+      );
+    }
+  }
+);
+
+/*******************************************
+ * Funciones relacionadas con el blockchain
+ ******************************************/
+
+//  Test
+router.post("/testblockchain", async (req, res) => {
+  let info;
+  try {
+    // Info contiene el array con los identificadores de los votantes
+    info = await registerController.testBlockchain();
+    // Se comprueba que el array de hashes no sea cero
+    if (info.length == 0) {
+      response.error(
+        req,
+        res,
+        "Error en el test del blockchain",
+        503,
+        "Error en el test del blockchain"
+      );
+    } else {
+      response.success(req, res, info, 200);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
-// Cierra el periodo de votación
-router.put("/closevotingperiod", verifyToken, validateToken, votationPeriodChecker, async (req, res) => {
-  serverResponse = await registerController.closeElections();
-  if (serverResponse.status === 200) {
-    response.success(req, res, serverResponse.message, serverResponse.status);
-  } else {
-    response.error(
-      req,
-      res,
-      serverResponse.message,
-      serverResponse.status,
-      serverResponse.message
-    );
+//  Agregar a todos los votantes al blockchain
+router.post("/addvotersbc", async (req, res) => {
+  let info;
+  try {
+    // Info contiene el array con los identificadores de los votantes
+    info = await registerController.addNewVotersBlockchain();
+    // Se comprueba que el array de hashes no sea cero
+    if (info.length == 0) {
+      response.error(
+        req,
+        res,
+        "Error en el test del blockchain",
+        503,
+        "Error en el test del blockchain"
+      );
+    } else {
+      response.success(req, res, info, 200);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -345,13 +442,20 @@ function validateToken(req, res, next) {
   });
 }
 
-// Verificar si la temporada de registro sigue abierta
+// Verificar si la temporada de registro sigue abierta, true para abierta
 async function registrationPeriodChecker(req, res, next) {
   try {
     const evaluationVar = await registerController.registrationPeriodChecker();
     if (evaluationVar == true) {
-      console.log(evaluationVar)
       next();
+    } else if (evaluationVar == null) {
+      response.error(
+        req,
+        res,
+        "No se ha inicializado la votación",
+        403,
+        "No se ha inicializado la votación"
+      );
     } else {
       response.error(
         req,
@@ -366,12 +470,20 @@ async function registrationPeriodChecker(req, res, next) {
   }
 }
 
-// Verificar si la temporada de registro sigue abierta
+// Verificar si la temporada de voto sigue abierta, true para abierta
 async function votationPeriodChecker(req, res, next) {
   try {
     const evaluationVar = await registerController.votationPeriodChecker();
     if (evaluationVar == true) {
       next();
+    } else if (evaluationVar == null) {
+      response.error(
+        req,
+        res,
+        "No se ha inicializado la votación",
+        403,
+        "No se ha inicializado la votación"
+      );
     } else {
       response.error(
         req,
