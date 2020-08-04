@@ -365,7 +365,7 @@ async function closeRegistration() {
 // Cambiar el periodo de votación a cerrado
 async function closeElections() {
   const verificationVariable = await profileStore.closeElections();
-  const closeBcEval = await gateway.closeElection()
+  const closeBcEval = await gateway.closeElection();
   let message, status;
   let retObject = { message, status };
   if (verificationVariable == true && closeBcEval == true) {
@@ -382,10 +382,10 @@ async function closeElections() {
   }
 }
 
-// Cambiar el periodo de votación a abierto //TODO: Agregar datos a blockchain
+// Cambiar el periodo de votación a abierto
 async function openElections() {
   const verificationVariable = await profileStore.openElections();
-  const openBcEval = await gateway.openElection()
+  const openBcEval = await gateway.openElection();
   let message, status;
   let retObject = { message, status };
   if (verificationVariable == true && openBcEval == true) {
@@ -414,21 +414,41 @@ async function votationPeriodChecker() {
   return evaluationParam;
 }
 
+// Obtiene la información de los candidatos
+async function retrieveCandidatesData() {
+  let message, status;
+  const votersData = await profileStore.retrieveCandidatesData();
+  let retObject = { message, status };
+  if (!votersData) {
+    message = "La elección no se ha inicializado";
+    status = 400;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message = votersData;
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
 /*******************************************
  * Funciones relacionadas con el blockchain
  ******************************************/
 
-async function testBlockchain() {
-  const testEval = await gateway.testFunc();
+//  Emite el voto directamente en el blockchain y cambia el estado de votante a votado
+async function voteEmition(voter, candidate, ci) {
+  const voteEmition = await gateway.voteEmition(voter, candidate);
+  const internalDBVoteEmitionConfirmation = await voterStore.voteSubmited(ci)
   let message, status;
   let retObject = { message, status };
-  if (testEval === true) {
-    message = "Test aprobado";
+  if (voteEmition === true && internalDBVoteEmitionConfirmation === true) {
+    message = "Voto emitido correctamente";
     status = 200;
     retObject = { message, status };
     return retObject;
   } else {
-    message = "Test fallido, algo pasa";
+    message = "Fallo en el BC para la emision del voto";
     status = 500;
     retObject = { message, status };
     return retObject;
@@ -540,6 +560,8 @@ module.exports = {
   closeRegistration,
   closeElections,
   openElections,
-  testBlockchain,
   addNewVotersBlockchain,
+  merkleTreesStructuring,
+  retrieveCandidatesData,
+  voteEmition,
 };

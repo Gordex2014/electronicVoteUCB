@@ -28,7 +28,7 @@ async function findProfile(filterProfile) {
   return profile;
 }
 
-// Inicializa los valores para la elección
+// Inicializa los valores para la elección INFORMACION HARDCODEADA
 async function initializeElectionConfigValues() {
   const initValue = new Config();
   const validationParam = await Config.findOne({ role: "administrator" });
@@ -37,6 +37,7 @@ async function initializeElectionConfigValues() {
     initValue.registrationOpen = true;
     initValue.votationPeriod = false;
     initValue.dataOnBlockchain = false;
+    initValue.candidates = ["azul", "rojo", "amarillo"]
     try {
       await initValue.save();
       return true;
@@ -45,6 +46,16 @@ async function initializeElectionConfigValues() {
     }
   } else {
     return false;
+  }
+}
+
+// Retorna la información de los candidatos
+async function retrieveCandidatesData(){
+  const configData = await Config.findOne({ role: "administrator" });
+  if (!configData){
+    return "No se ha inicializado la elección"
+  } else {
+    return configData.candidates
   }
 }
 
@@ -62,12 +73,13 @@ async function closeRegistration() {
 
 // Cambiar el valor de periodo de elecciones a "abierto"
 async function openElections() {
-  const registrationValue = await Config.findOne({ role: "administrator" });
+  let registrationValue = new Config()
+  registrationValue = await Config.findOne({ role: "administrator" });
   if (registrationValue.dataOnBlockchain === true) {
     return false;
   } else {
     registrationValue.votationPeriod = true;
-    registrationValue.dataOnBlockchain = true; //TODO: Agregar información a blockchain
+    registrationValue.dataOnBlockchain = true;
     await registrationValue.save();
     return true;
   }
@@ -89,13 +101,22 @@ async function closeElections() {
 async function registrationVerifier() {
   // Nótese que está hard codeado
   const registrationValue = await Config.findOne({ role: "administrator" });
-  return registrationValue.registrationOpen;
+
+  if (registrationValue == null) {
+    return false;
+  } else {
+    return registrationValue.registrationOpen;
+  }
 }
 
 // Revisa si el periodo de votación está abierto
 async function votationVerifier() {
   const votationDayValue = await Config.findOne({ role: "administrator" });
-  return votationDayValue.votationPeriod;
+  if (votationDayValue == null) {
+    return false;
+  } else {
+    return votationDayValue.votationPeriod;
+  }
 }
 
 module.exports = {
@@ -107,4 +128,5 @@ module.exports = {
   closeRegistration,
   openElections,
   closeElections,
+  retrieveCandidatesData,
 };

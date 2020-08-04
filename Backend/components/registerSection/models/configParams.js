@@ -15,7 +15,8 @@ const configSchema = new Schema({
   role: String,
   registrationOpen: Boolean,
   votationPeriod: Boolean,
-  dataOnBlockchain: Boolean
+  dataOnBlockchain: Boolean,
+  candidates: Array,
 });
 
 module.exports = mongoose.model("config", configSchema);

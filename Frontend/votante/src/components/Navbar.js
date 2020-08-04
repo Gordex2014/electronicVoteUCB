@@ -38,7 +38,7 @@ class Navbar extends React.Component {
     return (
       <div className="">
         <nav className="navbar navbar-expand-lg navbar-light bg-light ml-auto">
-          <img src={imtLogo} height="70px" alt="OEP Logo" className="pl-4" />
+          <img src={imtLogo} height="70px" alt="IMT Logo" className="pl-4" />
           <Link className="navbar-brand pl-4" to="/">
             INICIO
           </Link>

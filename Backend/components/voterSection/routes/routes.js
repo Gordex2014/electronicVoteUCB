@@ -19,16 +19,17 @@ const response = require("../../../network/response");
 const config = require("../../../config");
 const voterController = require("../controllers/voterController");
 const faceVerification = require("../controllers/faceLogic/faceVerification");
-const registerController = require("../../registerSection/controllers/registerController")
+const registerController = require("../../registerSection/controllers/registerController");
+const voter = require("../models/voter");
 
 const router = express.Router();
 
 // Comprueba la existencia del CI para poder obtener el panel de votante
-router.post("/ci", (req, res) => {
+router.post("/ci", votationPeriodChecker, (req, res) => {
   const { ci } = req.body;
   voterController
     .authenticateVoter(ci)
-    .then(voter => {
+    .then((voter) => {
       if (voter === null) {
         response.error(
           req,
@@ -41,58 +42,70 @@ router.post("/ci", (req, res) => {
         response.error(req, res, voter.message, voter.status, voter.message);
       } else {
         const sendToken = jwt.sign({ voter }, config.secretKey, {
-          expiresIn: "10m"
+          expiresIn: "10m",
         });
         response.success(req, res, sendToken, 200);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       response.error(req, res, "Error inesperado", 500, e);
     });
 });
 
 // Obtiene el panel de votante una vez se ha logeado con el CI
-router.post("/voterpanel", verifyToken, validateToken, votationPeriodChecker, (req, res) => {
-  const { ci } = req.body;
-  voterController
-    .getVoterPanel(ci)
-    .then(info => {
-      if (info === null) {
-        response.error(
-          req,
-          res,
-          "Votante no encontrado",
-          400,
-          "No se ha encontrado al votante por ci"
-        );
-      }
-      if (!info.ci) {
-        response.error(req, res, info.message, info.status, info.message);
-      } else {
-        response.success(req, res, info, 200);
-      }
-    })
-    .catch(e => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.post(
+  "/voterpanel",
+  verifyToken,
+  validateToken,
+  votationPeriodChecker,
+  (req, res) => {
+    const { ci } = req.body;
+    voterController
+      .getVoterPanel(ci)
+      .then((info) => {
+        if (info === null) {
+          response.error(
+            req,
+            res,
+            "Votante no encontrado",
+            400,
+            "No se ha encontrado al votante por ci"
+          );
+        }
+        if (!info.ci) {
+          response.error(req, res, info.message, info.status, info.message);
+        } else {
+          response.success(req, res, info, 200);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Obtener la respuesta de verificación de coincidencia de rostros
-router.post("/faceverification", verifyToken, validateToken, votationPeriodChecker, (req, res) => {
-  const { ci, testImg } = req.body;
-  faceVerification
-    .verification(ci, testImg)
-    .then(info => {
-      if (info.message) {
-        response.error(req, res, info.message, info.status, info.message);
-      } else if (info === true) {
-        response.success(req, res, "Se ha comprobado correctamente", 200);
-      }
-    })
-    .catch(e => {
-      response.error(req, res, "Error inesperado", 500, e);
-    });
-});
+router.post(
+  "/faceverification",
+  verifyToken,
+  validateToken,
+  votationPeriodChecker,
+  (req, res) => {
+    const { ci, testImg } = req.body;
+    faceVerification
+      .verification(ci, testImg)
+      .then((info) => {
+        if (info.message) {
+          response.error(req, res, info.message, info.status, info.message);
+        } else if (info === true) {
+          response.success(req, res, "Se ha comprobado correctamente", 200);
+        }
+      })
+      .catch((e) => {
+        response.error(req, res, "Error inesperado", 500, e);
+      });
+  }
+);
 
 // Obtener la respuesta de verificación ded verificación de conincidencia de huellas dactilares
 
@@ -114,7 +127,7 @@ router.post(
       const responseData = await axios.post(
         `${config.host}:${config.port}/api/fingerprint/search`,
         {
-          characteristicsData: characteristicsData
+          characteristicsData: characteristicsData,
         }
       );
       // Se actualiza el estado de error
@@ -140,6 +153,52 @@ router.post(
     }
   }
 );
+
+// Emisión de voto
+router.post("/voteemition", verifyToken, validateToken, votationPeriodChecker, async (req, res) => {
+  let bcConfirmation = undefined
+  const { ci, voteIntention } = req.body;
+  const voterData = await voterController.getVoterPanel(ci);
+  if (
+    voterData.facial == true &&
+    voterData.fingerprint == true &&
+    voterData.emitedvote == false
+  ) {
+    const simpleHash = await registerController.merkleTreesStructuring(
+      voterData
+    );
+    bcConfirmation = await registerController.voteEmition(
+      simpleHash,
+      voteIntention,
+      ci
+    );
+  }
+  if (bcConfirmation === undefined) {
+    response.error(
+      req,
+      res,
+      "Primero se debe confirmar su identidad",
+      401,
+      "Primero se debe confirmar su identidad"
+    );
+  } else if (bcConfirmation.status == 200) {
+    response.success(req, res, bcConfirmation.message, 200);
+  } else {
+    response.error(req, res, bcConfirmation.status, 500, bcConfirmation.status);
+  }
+});
+
+// Obtener informacion de candidatos
+router.get("/candidatesdata", async (req, res) => {
+  const candidatesData = await registerController.retrieveCandidatesData();
+  if (candidatesData.status == 400) {
+    response.error(req, res, [candidatesData.message], 400, [
+      candidatesData.message,
+    ]);
+  } else {
+    response.success(req, res, candidatesData.message, 200);
+  }
+});
 
 // Función que obtiene las características de todas las huellas almacenadas en la base de datos, para verificar que no
 // existan duplicadas

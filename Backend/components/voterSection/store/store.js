@@ -108,6 +108,18 @@ async function getAllInfo() {
   return voters;
 }
 
+// Cambiar el estado del votante a votado
+async function voteSubmited(ci) {
+  const voter = await Voter.findOne({ ci: ci });
+  if (!voter) {
+    return false;
+  } else {
+    voter.emitedvote = true;
+    voter.save();
+    return true;
+  }
+}
+
 
 
 module.exports = {
@@ -121,4 +133,5 @@ module.exports = {
   fingerChar: fingerCharacteristics,
   fingerUniqueChar: fingerUniqueChar,
   getAllInfo: getAllInfo,
+  voteSubmited,
 };
