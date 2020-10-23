@@ -13,6 +13,8 @@ Inicializar el entorno
 
 - Inicializar los peers
 
+  NOTA: Asegúrate de tener Docker ejecutándose
+
   cd peer
   ./clean.sh
   source set-env.sh ucb
