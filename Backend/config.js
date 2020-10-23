@@ -14,7 +14,7 @@ const config = {
   secretKey: process.env.SECRET_KEY || "Ll4v3Pru3b4",
   azureEndPoint: process.env.AZURE_ENDPOINT,
   azureSubscriptionKey: process.env.AZURE_SUBSCRIPTION_KEY,
-  fingerprintHost: process.env.FINGERPRINT_HOST || "http://192.168.0.105:8081"
+  fingerprintHost: process.env.FINGERPRINT_HOST || "http://192.168.0.121:8081"
 };
 
 module.exports = config;
