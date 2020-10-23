@@ -45,7 +45,6 @@ async function verification(ci, testImg) {
   imageRoute = path.join(process.cwd(), `/public/votersPhotos/temp/${ci}.jpg`);
   await imageDataURI
     .outputFile(testImg, imageRoute)
-    .then(res => console.log(res));
   // Conexión con Azure Cognitive Services
   const options = {
     headers: {
