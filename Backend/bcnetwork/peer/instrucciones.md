@@ -15,7 +15,7 @@ Inicializar el entorno
 
   cd peer
   ./clean.sh
-  . set-env.sh ucb
+  source set-env.sh ucb
   ./create-voting-channel.sh
   ./launch-peer.sh ucb
   ./join-voting-channel.sh ucb
@@ -34,9 +34,9 @@ Inicializar el entorno
 Configurar entorno
 ===================
 Configurar variables de entorno de las respectivas organizaciones
-. ./set-env.sh  nombre-organizacion <identidad predeterminado=admin>
+source ./set-env.sh  nombre-organizacion <identidad predeterminado=admin>
 Ejemplo, configurar el entorno para User1 en ucb
-. ./set-env.sh   ucb   User1
+source ./set-env.sh   ucb   User1
 
 Kill ALL Peers without cleaning
 ===============================

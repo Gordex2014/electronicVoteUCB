@@ -11,7 +11,7 @@ const express = require("express");
 
 // Inicializacion de la app
 const app = express();
-// Set de servidor para sockets
+// // Set de servidor para sockets
 const server = require("http").Server(app);
 
 // Más dependencias

@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "dev": "nodemon index"
+    "dev": "nodemon index",
+    "deploy": "pm2 start index.js --name electronic-voting-ucb --log /Users/alvarosalinasdockar/electronicVoteUCB/Backend/serverlogs",
+    "list": "pm2 list",
+    "restart": "pm2 restart index.js",
+    "stop": "pm2 stop index.js",
+    "delete": "pm2 delete electronic-voting-ucb"
   },
   "author": "Alvaro Salinas Dockar",
   "license": "MIT",

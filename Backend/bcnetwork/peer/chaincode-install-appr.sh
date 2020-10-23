@@ -13,9 +13,9 @@ CC_PACKAGE_NAME_DIR=$PWD/../chaincode/packages/cc_package_name.txt
 #3 Obteniendo el entorno
 echo   '1. Obteniendo el entorno de ejecución'
 if [ "$1" == "ucb" ]; then
-    . ./set-env.sh ucb
+    source ./set-env.sh ucb
 elif [ "$1" == "audit" ]; then
-    . ./set-env.sh audit
+    source ./set-env.sh audit
 else
     echo "Debe proporcionar el nombre de la organización"
     exit 1
