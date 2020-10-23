@@ -70,7 +70,8 @@ def enroll_user():
                 f.uploadCharacteristics(0x02, characteristic)
 
                 compare_characteristics_payload = f.compareCharacteristics()
-
+                
+                ## Umbral de decision para la aceptación de huellas dactilares
                 if compare_characteristics_payload > 20:
                     send_instructions('La huella ya se encuentra registrada en la base de datos')
                     return jsonify(
