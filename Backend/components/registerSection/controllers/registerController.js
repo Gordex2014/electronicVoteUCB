@@ -66,7 +66,7 @@ function addVoter(voterParams) {
 
   // Ingresar la imagen como archivo al servidor
   imageRoute = path.join(process.cwd(), `/public/votersPhotos/${ci}.jpg`);
-  imageDataURI.outputFile(dataUri, imageRoute).then((res) => console.log(res));
+  imageDataURI.outputFile(dataUri, imageRoute);
 
   // Ingreso a base de datos
   let newVoter = {
@@ -439,7 +439,7 @@ async function retrieveCandidatesData() {
 //  Emite el voto directamente en el blockchain y cambia el estado de votante a votado
 async function voteEmition(voter, candidate, ci) {
   const voteEmition = await gateway.voteEmition(voter, candidate);
-  const internalDBVoteEmitionConfirmation = await voterStore.voteSubmited(ci)
+  const internalDBVoteEmitionConfirmation = await voterStore.voteSubmited(ci);
   let message, status;
   let retObject = { message, status };
   if (voteEmition === true && internalDBVoteEmitionConfirmation === true) {

@@ -37,7 +37,7 @@ async function faceDetecionId(ci) {
 
   const faceIds = {
     faceId1: staticFaceId,
-    faceId2: tempFaceId
+    faceId2: tempFaceId,
   };
 
   return faceIds;
@@ -48,13 +48,13 @@ async function faceDetecion(binaryImage) {
   const options = {
     headers: {
       "Content-Type": "application/octet-stream",
-      "Ocp-Apim-Subscription-Key": subscriptionKey
-    }
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+    },
   };
-  const ax = await axios.post(detectFaceUrl, binaryImage, options)
-  return ax.data[0].faceId
+  const ax = await axios.post(detectFaceUrl, binaryImage, options);
+  return ax.data[0].faceId;
 }
 
 module.exports = {
-    faceDetecionId
-}
+  faceDetecionId,
+};

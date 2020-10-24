@@ -43,14 +43,13 @@ async function verification(ci, testImg) {
   }
   // Ingresar la imagen como archivo al servidor
   imageRoute = path.join(process.cwd(), `/public/votersPhotos/temp/${ci}.jpg`);
-  await imageDataURI
-    .outputFile(testImg, imageRoute)
+  await imageDataURI.outputFile(testImg, imageRoute);
   // Conexión con Azure Cognitive Services
   const options = {
     headers: {
       "Content-Type": "application/json",
-      "Ocp-Apim-Subscription-Key": subscriptionKey
-    }
+      "Ocp-Apim-Subscription-Key": subscriptionKey,
+    },
   };
   const parameters = await faces.faceDetecionId(ci);
   const response = await axios.post(detectFaceUrl, parameters, options);
@@ -62,5 +61,5 @@ async function verification(ci, testImg) {
 }
 
 module.exports = {
-  verification
+  verification,
 };
