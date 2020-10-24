@@ -323,7 +323,7 @@ async function processAllDataMerkleTrees() {
 
 // Inicializa el periodo de elección
 async function configInit() {
-  const walletEval = await addToWallet.addToWallet();
+  const walletEval = await addToWallet.createWallets();
   const initEval = await profileStore.initElection();
   let message, status;
   let retObject = { message, status };

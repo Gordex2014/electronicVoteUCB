@@ -25,28 +25,26 @@ const WALLET_FOLDER = "./user-wallet";
 // Crea una instancia del FileSystemWallet
 const wallet = new FileSystemWallet(WALLET_FOLDER);
 
-async function addToWallet() {
-  const ORGANIZATION_NAME = "ucb";
-  const USER_NAME = "Admin";
+async function addToWallet(organizationName, userRole) {
   // Lectura del contenido de la llave y certificado
   try {
-    var cert = readCertCryptogen(ORGANIZATION_NAME, USER_NAME);
-    var key = readPrivateKeyCryptogen(ORGANIZATION_NAME, USER_NAME);
+    var cert = readCertCryptogen(organizationName, userRole);
+    var key = readPrivateKeyCryptogen(organizationName, userRole);
   } catch (e) {
     console.log(
       "Error en la lectura de la llave privada o el certificado! " +
-        ORGANIZATION_NAME +
+        organizationName +
         "/" +
-        USER_NAME
+        userRole
     );
-    process.exit(1);
+    return false;
   }
 
   // Creación el MSP ID
-  let mspId = createMSPId(ORGANIZATION_NAME);
+  let mspId = createMSPId(organizationName);
 
   // Creación de etiquetas
-  const identityLabel = createIdentityLabel(ORGANIZATION_NAME, USER_NAME);
+  const identityLabel = createIdentityLabel(organizationName, userRole);
 
   // Creación de la identidad X.509 basada en el certificado y la llave
   const identity = X509WalletMixin.createIdentity(mspId, cert, key);
@@ -54,6 +52,20 @@ async function addToWallet() {
   // Añadir identidad al wallet
   await wallet.import(identityLabel, identity);
 
+  return true;
+}
+
+async function createWallets() {
+  // Para este ejemplo, las entidades están pre establecidas
+  const ORGANIZATIONS = ["ucb", "audit"];
+  const ROLES = ["Admin", "Admin"];
+  for (i = 0; i < ORGANIZATIONS.length; i++) {
+    try {
+      await addToWallet(ORGANIZATIONS[i], ROLES[i]);
+    } catch (err) {
+      return false;
+    }
+  }
   return true;
 }
 
@@ -110,5 +122,5 @@ function createMSPId(org) {
 }
 
 module.exports = {
-  addToWallet,
+  createWallets,
 };
