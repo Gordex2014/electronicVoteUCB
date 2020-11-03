@@ -13,6 +13,7 @@ const voterStore = require("../../voterSection/store/store");
 const profileStore = require("../store/store");
 const gateway = require("../blockchain/gateway");
 const addToWallet = require("../blockchain/addToWallet");
+const config = require("../../../config");
 
 // Función para agregar nuevo votante, previamente controlados los ingresos
 function addVoter(voterParams) {
@@ -481,22 +482,22 @@ async function addNewVotersBlockchain() {
 function merkleTreesStructuring(data) {
   // La información está estructurada de la siguiente manera:
   //
-  //                H1
-  // -  name        ---------   R1
-  //                H2      !---------
-  // -  lastname    ---------        |   R5
-  //                H3               |---------
-  // -  ci          ---------   R2   |        |
-  //                H4      !---------        |
-  // -              ---------                 |   HF
-  //                H5                        |--------- Hash Final
-  // -  city        ---------   R3            |
-  //                H6      !---------        |
-  // -              ---------        |   R6   |
-  //                H7               |---------
-  // -  location    ---------   R4   |
-  //                H8      !---------
-  // -              ---------
+  //                  H1
+  // -  name          ---------   R1
+  //                  H2      !---------
+  // -  lastname      ---------        |   R5
+  //                  H3               |---------
+  // -  ci            ---------   R2   |        |
+  //                  H4      !---------        |
+  // -  merklePubKey  ---------                 |   HF
+  //                  H5                        |--------- Hash Final
+  // -  city          ---------   R3            |
+  //                  H6      !---------        |
+  // -                ---------        |   R6   |
+  //                  H7               |---------
+  // -  location      ---------   R4   |
+  //                  H8      !---------
+  // -                ---------
   //
   // Cabe recalcar que se debe comprobar que facial, fingerprint y emitedvote queden en false para poder
   // así evitar un cambio previo en la base de datos
@@ -513,6 +514,7 @@ function merkleTreesStructuring(data) {
   H1 = keccakHash("keccak256").update(data.name).digest("hex");
   H2 = keccakHash("keccak256").update(data.lastname).digest("hex");
   H3 = keccakHash("keccak256").update(data.ci.toString()).digest("hex");
+  H4 = keccakHash("keccak256").update(config.merklePubKey.digest("hex"));
   H5 = keccakHash("keccak256").update(data.city).digest("hex");
   H7 = keccakHash("keccak256").update(data.location).digest("hex");
 
@@ -520,7 +522,9 @@ function merkleTreesStructuring(data) {
   R1 = keccakHash("keccak256")
     .update(H1 + H2)
     .digest("hex");
-  R2 = keccakHash("keccak256").update(H3).digest("hex");
+  R2 = keccakHash("keccak256")
+    .update(H3 + H4)
+    .digest("hex");
   R3 = keccakHash("keccak256").update(H5).digest("hex");
   R4 = keccakHash("keccak256").update(H7).digest("hex");
 
