@@ -514,7 +514,7 @@ function merkleTreesStructuring(data) {
   H1 = keccakHash("keccak256").update(data.name).digest("hex");
   H2 = keccakHash("keccak256").update(data.lastname).digest("hex");
   H3 = keccakHash("keccak256").update(data.ci.toString()).digest("hex");
-  H4 = keccakHash("keccak256").update(config.merkleSalt.digest("hex"));
+  H4 = keccakHash("keccak256").update(config.merkleSalt).digest("hex");
   H5 = keccakHash("keccak256").update(data.city).digest("hex");
   H7 = keccakHash("keccak256").update(data.location).digest("hex");
 
