@@ -20,7 +20,7 @@ import Home from "../pages/Home";
 import FacialTest from "../pages/FacialTest";
 import NotFound from "../pages/NotFound";
 import FingerprintTest from "../pages/FingerprintTest";
-import votingPanel from "../pages/votingPanel";
+import VotingPanel from "../pages/VotingPanel";
 
 export default class App extends React.Component {
   render() {
@@ -38,7 +38,7 @@ export default class App extends React.Component {
               path="/fingerprinttest"
               component={FingerprintTest}
             ></Route>
-            <Route exact path="/vote" component={votingPanel}></Route>
+            <Route exact path="/vote" component={VotingPanel}></Route>
             <Route component={NotFound}></Route>
           </Switch>
         </Layout>

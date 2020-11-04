@@ -29,6 +29,9 @@ import yellowCandidateImage from "../images/yellow.png";
 import isTokenValid from "../utils/isTokenValid";
 import config from "../utils/config";
 
+// Estilos
+import "./styles/votingPanelStyles.css"
+
 export default class votingPanel extends Component {
   constructor(props) {
     super(props);
@@ -202,7 +205,7 @@ export default class votingPanel extends Component {
           </div>
           <div className="row">
             <div className="col">
-              <div className="mt-4 mb-4">
+              <div className="mt-4 mb-5">
                 <img
                   src={blueCandidateImage}
                   height="300px"
@@ -220,7 +223,7 @@ export default class votingPanel extends Component {
               </div>
             </div>
             <div className="col">
-              <div className="mt-4 mb-4">
+              <div className="mt-4 mb-5">
                 <img
                   src={redCandidateImage}
                   height="300px"
@@ -238,7 +241,7 @@ export default class votingPanel extends Component {
               </div>
             </div>
             <div className="col">
-              <div className="mt-4 mb-4">
+              <div className="mt-4 mb-5">
                 <img
                   src={yellowCandidateImage}
                   height="300px"
