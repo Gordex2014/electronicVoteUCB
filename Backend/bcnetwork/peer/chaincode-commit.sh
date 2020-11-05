@@ -19,4 +19,4 @@ peer lifecycle chaincode querycommitted -n evoting  -C votingchannel
 
 echo "=================== Inicializando el chaincode ==================="
 
-peer chaincode invoke --isInit  -n evoting -C votingchannel -c '{"Args":["init"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=localhost:7051 #TODO: Arreglar puerto
+peer chaincode invoke --isInit  -n evoting -C votingchannel -c '{"Args":["init"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=192.168.0.121:8051
