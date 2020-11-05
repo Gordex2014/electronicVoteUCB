@@ -21,8 +21,8 @@ const router = express.Router();
 // biométricas de la parsona
 router.post("/enroll", (req, res) => {
   let petitionResponse = axios
-    .get(`${config.fingerprintHost}/enroll`)
-    .then(data => {
+    .get(`${config.fingerprintRegisterHost}/enroll`)
+    .then((data) => {
       petitionResponse = data.data;
       if (petitionResponse.error) {
         response.error(
@@ -37,7 +37,7 @@ router.post("/enroll", (req, res) => {
         response.success(req, res, `${petitionResponse.value}`); //TODO: respuesta.value a la base de datos
       }
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
     });
 });
@@ -45,11 +45,11 @@ router.post("/enroll", (req, res) => {
 router.post("/search", (req, res) => {
   const { characteristicsData } = req.body;
   const params = {
-    characteristicsData: characteristicsData
+    characteristicsData: characteristicsData,
   };
   let petitionResponse = axios
-    .post(`${config.fingerprintHost}/search`, params)
-    .then(data => {
+    .post(`${config.fingerprintClientHost}/search`, params)
+    .then((data) => {
       petitionResponse = data.data;
       if (petitionResponse.error) {
         response.error(
@@ -64,7 +64,7 @@ router.post("/search", (req, res) => {
         response.success(req, res, petitionResponse.value);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
     });
 });

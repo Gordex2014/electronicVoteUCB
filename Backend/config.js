@@ -14,8 +14,11 @@ const config = {
   secretKey: process.env.SECRET_KEY || "Ll4v3Pru3b4",
   azureEndPoint: process.env.AZURE_ENDPOINT,
   azureSubscriptionKey: process.env.AZURE_SUBSCRIPTION_KEY,
-  fingerprintHost: process.env.FINGERPRINT_HOST || "http://192.168.0.105:8081",
-  merkleSalt: process.env.MERKLE_SALT || "merkle_salt_test"
+  fingerprintRegisterHost:
+    process.env.FINGERPRINT_REGISTER_HOST || "http://192.168.0.105:8081",
+  fingerprintClientHost:
+    process.env.FINGERPRINT_Client_HOST || "http://192.168.0.105:8081",
+  merkleSalt: process.env.MERKLE_SALT || "merkle_salt_test",
 };
 
 module.exports = config;
