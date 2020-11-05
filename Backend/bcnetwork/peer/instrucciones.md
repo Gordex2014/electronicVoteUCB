@@ -25,11 +25,13 @@ Inicializar el entorno
   ./join-voting-channel.sh audit
 
 - Inicializar el chaincode
-
+  <!-- Esto lo hace UCB  -->
   ./chaincode-package.sh
+  <!-- Esto lo hacen ambos  -->
   ./chaincode-install-appr.sh ucb
   ./chaincode-install-appr.sh audit
-  ./chaincode-commit.sh
+  <!-- Esto lo hace UCB  -->
+  ./chaincode-commit.sh  
 
 - Al momento de iniciar nuevamente es necesario borrar manualmente la carpeta 'user-wallet' en la raíz de Backend y la colección config en la base de datos
 

@@ -89,7 +89,7 @@ Orderer: &OrdererDefaults
   OrdererType: solo
 
   Addresses:
-    - localhost:7050
+    - 192.168.0.120:7050
   Policies:
     Readers:
         Type: ImplicitMeta

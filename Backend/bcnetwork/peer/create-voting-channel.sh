@@ -28,4 +28,4 @@ export FABRIC_CFG_PATH=$PWD/$ORG_NAME
 signChannelTxFile
 echo "Transacción firmada por Audit pro"
 
-peer channel create -o localhost:7050 -c votingchannel -f $CONFIG_FOLDER/voting-channel.tx
+peer channel create -o 192.168.0.120:7050 -c votingchannel -f $CONFIG_FOLDER/voting-channel.tx

@@ -23,7 +23,7 @@ General:
     
     LocalMSPID: OrdererMSP
 
-    ListenAddress: 0.0.0.0
+    ListenAddress: 192.168.0.120
 
     ListenPort: 7050
 
@@ -60,7 +60,7 @@ Debug:
     DeliverTraceDir:
 
 Operations:
-    ListenAddress: 127.0.0.1:8443
+    ListenAddress: 192.168.0.120:8443
     TLS:
         Enabled: false
         Certificate:
@@ -71,7 +71,7 @@ Metrics:
     Provider: disabled
     Statsd:
       Network: udp
-      Address: 127.0.0.1:8125
+      Address: 192.168.0.120:8125
       WriteInterval: 30s
       Prefix:
 

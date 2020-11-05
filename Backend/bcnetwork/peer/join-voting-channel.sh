@@ -6,7 +6,7 @@
 #############################################
 
 echo "El script no funcionará si el peer para $ORG_NAME no está activo."
-GENESIS_BLOCK=./airlinechannel.block
+GENESIS_BLOCK=./votingchannel.block
 
 CRYPTO_FOLDER=$PWD/../orderer/crypto-config
 if [ -z $1 ]
@@ -29,9 +29,9 @@ then
 	echo "Archivo del bloque génesis encontrado."
 else
 	echo "Obteniendo el archivo del bloque génesis."
-    peer channel fetch 0  $GENESIS_BLOCK -o localhost:7050 -c votingchannel
+    peer channel fetch 0  $GENESIS_BLOCK -o 192.168.0.120:7050 -c votingchannel
 fi
 
 
 # Uniéndose al canal
-peer channel join -o localhost:7050 -b $GENESIS_BLOCK
+peer channel join -o 192.168.0.120:7050 -b $GENESIS_BLOCK

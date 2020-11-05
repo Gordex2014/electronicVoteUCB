@@ -9,9 +9,9 @@
 peer:
     id: devpeer
     networkId: dev
-    listenAddress: 0.0.0.0:8051
-    chaincodeListenAddress: 0.0.0.0:8052
-    address: 0.0.0.0:8051
+    listenAddress: 192.168.0.121:8051
+    chaincodeListenAddress: 192.168.0.121:8052
+    address: 192.168.0.121:8051
     addressAutoDetect: false
     gomaxprocs: -1
     keepalive:
@@ -24,7 +24,7 @@ peer:
             timeout: 20s
 
     gossip:
-        bootstrap: 127.0.0.1:8051
+        bootstrap: 192.168.0.121:8051
         useLeaderElection: true
         orgLeader: false
         membershipTrackerInterval: 5s
@@ -120,7 +120,7 @@ peer:
 
     profile:
         enabled:     false
-        listenAddress: 0.0.0.0:6060
+        listenAddress: 192.168.0.121:6060
 
     adminService:
     handlers:
@@ -224,7 +224,7 @@ ledger:
     totalQueryLimit: 100000
     couchDBConfig:
 
-       couchDBAddress: 127.0.0.1:5984
+       couchDBAddress: 192.168.0.121:5984
        username:
        password:
        maxRetries: 3
@@ -243,7 +243,7 @@ ledger:
     collElgProcDbBatchesInterval: 1000
     
 operations:
-    listenAddress: 127.0.0.1:10443
+    listenAddress: 192.168.0.121:10443
     tls:
         enabled: false
         cert:
@@ -257,6 +257,6 @@ metrics:
     provider: disabled
     statsd:
         network: udp
-        address: 127.0.0.1:8125
+        address: 192.168.0.121:8125
         writeInterval: 10s
         prefix:
