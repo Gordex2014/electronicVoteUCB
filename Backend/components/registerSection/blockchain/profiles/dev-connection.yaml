@@ -39,13 +39,13 @@ channels:
 
 orderers:
   orderer.ucb.com:
-    url: grpc://localhost:7050
+    url: grpc://192.168.0.120:7050
     grpcOptions:
       ssl-target-name-override: orderer.ucb.com
 
 peers:
   ucb-peer1.ucb.com:
-    url: grpc://127.0.0.1:7051
+    url: grpc://192.168.0.120:7051
 
   audit-peer1.audit.com:
-    url: grpc://localhost:8051
+    url: grpc://192.168.0.121:8051
