@@ -177,13 +177,13 @@ async function voteCounting() {
   try {
     // Transacción
     let response = await contract.evaluateTransaction("voteCounting");
+    let jsonResponse = JSON.parse(response)
     // console.log("Respuesta del blockchain =", response.toString());
+    return jsonResponse;
   } catch (e) {
     // Error de Timeout
-    console.log(e);
     return false;
   }
-  return true;
 }
 
 // Función para configurar el Gateway, no se conecta aún con el peer u orderer

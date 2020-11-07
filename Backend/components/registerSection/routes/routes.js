@@ -361,55 +361,19 @@ router.put(
   }
 );
 
-/*******************************************
- * Funciones relacionadas con el blockchain
- ******************************************/
+/****************************************************
+ * Funciones abiertas relacionadas con el blockchain
+ ***************************************************/
 
-//  Test
-router.post("/testblockchain", async (req, res) => {
-  let info;
-  try {
-    // Info contiene el array con los identificadores de los votantes
-    info = await registerController.testBlockchain();
-    // Se comprueba que el array de hashes no sea cero
-    if (info.length == 0) {
-      response.error(
-        req,
-        res,
-        "Error en el test del blockchain",
-        503,
-        "Error en el test del blockchain"
-      );
-    } else {
-      response.success(req, res, info, 200);
-    }
-  } catch (error) {
-    console.log(error);
+//  Obtener Resultados de la elección
+router.get("/getresults", async(req, res) => {
+  const serverResponse = await registerController.voteCounting()
+  if (response.status === 500){
+    response.error(req, res, serverResponse.message, serverResponse.status, serverResponse.message)
+  } else {
+    response.success(req, res, serverResponse.message, serverResponse.status)
   }
-});
-
-//  Agregar a todos los votantes al blockchain
-router.post("/addvotersbc", async (req, res) => {
-  let info;
-  try {
-    // Info contiene el array con los identificadores de los votantes
-    info = await registerController.addNewVotersBlockchain();
-    // Se comprueba que el array de hashes no sea cero
-    if (info.length == 0) {
-      response.error(
-        req,
-        res,
-        "Error en el test del blockchain",
-        503,
-        "Error en el test del blockchain"
-      );
-    } else {
-      response.success(req, res, info, 200);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
+})
 
 /*************************
  * Funciones intermedias

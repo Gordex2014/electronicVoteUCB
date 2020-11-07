@@ -24,6 +24,7 @@ Inicializar el entorno
   ./launch-peer.sh ucb
   ./join-voting-channel.sh ucb
   <!-- AUDIT -->
+  source set-env.sh audit
   ./launch-peer.sh audit
   ./join-voting-channel.sh audit
 

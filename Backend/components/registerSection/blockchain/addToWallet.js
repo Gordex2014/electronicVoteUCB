@@ -59,7 +59,7 @@ async function createWallets() {
   // Para este ejemplo, las entidades están pre establecidas
   const ORGANIZATIONS = ["ucb", "audit"];
   const ROLES = ["Admin", "Admin"];
-  for (i = 0; i < ORGANIZATIONS.length; i++) {
+  for (let i = 0; i < ORGANIZATIONS.length; i++) {
     try {
       await addToWallet(ORGANIZATIONS[i], ROLES[i]);
     } catch (err) {

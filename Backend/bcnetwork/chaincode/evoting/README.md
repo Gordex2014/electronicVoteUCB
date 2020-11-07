@@ -1,18 +1,18 @@
-Launch the environment
+Iniciar en el dev env
 ======================
-Launch Dev Environment:     dev-init.sh -e
+Dev env con hyperledger explorer:     dev-init.sh -e
 
-Try out v1/token (Fabric version 2.x)
+Dev env
 =====================================
 
 # 1 Instalar el chaincode
 
 . set-env.sh acme
 
-- Setup the chaincode environment
+- Configurar el entorno de desarrollo
 set-chain-env.sh   -n  evoting   -p token/evoting    -c '{"Args":["init"]}'  
 
-Option-1
+Opcion-1
 --------
 chain.sh package
 
@@ -20,13 +20,13 @@ chain.sh install
 
 chain.sh approveformyorg
 
-(Optional)  chain.sh checkcommitreadiness
+(Opcional)  chain.sh checkcommitreadiness
 
 chain.sh commit
 
-(Optional)  chain.sh querycommitted
+(Opcional)  chain.sh querycommitted
 
-Option-2
+Opcion-2
 --------
 
 chain.sh install -p
@@ -68,7 +68,3 @@ set-chain-env.sh         -i   '{"Args":["voteEmition","c95723977547b78302da6328f
 chain.sh  invoke
 set-chain-env.sh         -i   '{"Args":["voteEmition","7a3ed0760e383246dbc1331439d9a8544937bbd6b430bd623940a26b884cc74b","rojo"]}'
 chain.sh  invoke
-
-# 3. Check out the transactions in the explorer
-
-http://localhost:8080/#/transactions

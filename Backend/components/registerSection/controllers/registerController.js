@@ -475,6 +475,22 @@ async function addNewVotersBlockchain() {
   }
 }
 
+async function voteCounting() {
+  const response = await gateway.voteCounting();
+  let message, status;
+  if (response === false) {
+    message = "La elección está en curso";
+    status = 500;
+    retObject = { message, status };
+    return retObject;
+  } else {
+    message = response;
+    status = 200;
+    retObject = { message, status };
+    return retObject;
+  }
+}
+
 /*************************
  * Funciones de utilidad
  ************************/
@@ -568,4 +584,5 @@ module.exports = {
   merkleTreesStructuring,
   retrieveCandidatesData,
   voteEmition,
+  voteCounting,
 };
