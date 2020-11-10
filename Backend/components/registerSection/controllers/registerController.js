@@ -505,7 +505,7 @@ function merkleTreesStructuring(data) {
   //                      H3               |---------
   // -  ci                ---------   R2   |        |
   //                      H4      !---------        |
-  // -  merkleSaltArray   ---------                 |   HF
+  // -  markleSalt        ---------                 |   HF
   //                      H5                        |--------- Hash Final
   // -  city              ---------   R3            |
   //                      H6      !---------        |
@@ -526,16 +526,13 @@ function merkleTreesStructuring(data) {
     HF = null;
   }
 
-  const { markleSaltArray } = config;
-  const randomSaltIndex = Math.floor(Math.random() * markleSaltArray.length);
+  const { markleSalt } = config;
 
   // Primera ronda
   H1 = keccakHash("keccak256").update(data.name).digest("hex");
   H2 = keccakHash("keccak256").update(data.lastname).digest("hex");
   H3 = keccakHash("keccak256").update(data.ci.toString()).digest("hex");
-  H4 = keccakHash("keccak256")
-    .update(markleSaltArray[randomSaltIndex])
-    .digest("hex");
+  H4 = keccakHash("keccak256").update(markleSalt).digest("hex");
   H5 = keccakHash("keccak256").update(data.city).digest("hex");
   H7 = keccakHash("keccak256").update(data.location).digest("hex");
 

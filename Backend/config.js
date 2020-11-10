@@ -18,10 +18,7 @@ const config = {
     process.env.FINGERPRINT_REGISTER_HOST || "http://192.168.0.105:8081",
   fingerprintClientHost:
     process.env.FINGERPRINT_Client_HOST || "http://192.168.0.105:8081",
-  merkleSaltArray: process.env.MERKLE_SALT_ARRAY || [
-    "merkle_salt_test",
-    "merkle_salt_test_2",
-  ],
+  merkleSalt: process.env.MERKLE_SALT || "merkle_salt_test",
 };
 
 module.exports = config;
