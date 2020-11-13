@@ -4,8 +4,7 @@ export default class NotFound extends Component {
   render() {
     return (
       <div>
-        Not Found xd
-        <h1>xd</h1>
+        <h1>This is a Gordex's Easter Egg, btw page not found</h1>
       </div>
     );
   }

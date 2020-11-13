@@ -111,18 +111,18 @@ export default class voterCard extends Component {
                   <li className="list-group-item">CI: {this.state.ci}</li>
                   {this.state.facial ? (
                     <li className="list-group-item">
-                      Prueba facial :{" "}
+                      Prueba facial realizada:{" "}
                       <img src={checkIcon} alt="check-facial" height="25px" />
                     </li>
                   ) : (
                     <li className="list-group-item">
-                      Prueba facial :{" "}
+                      Prueba facial realizada:{" "}
                       <img src={errorIcon} alt="error-facial" height="25px" />
                     </li>
                   )}
                   {this.state.fingerprint ? (
                     <li className="list-group-item">
-                      Prueba biom&eacute;trica :{" "}
+                      Prueba dactilar realizada :{" "}
                       <img
                         src={checkIcon}
                         alt="check-fingerprint"
@@ -131,7 +131,7 @@ export default class voterCard extends Component {
                     </li>
                   ) : (
                     <li className="list-group-item">
-                      Prueba biom&eacute;trica :{" "}
+                      Prueba dactilar realizada :{" "}
                       <img
                         src={errorIcon}
                         alt="error-fingerprint"
@@ -170,13 +170,13 @@ export default class voterCard extends Component {
                 </ul>
                 <div className="card-body">
                   {this.state.facial === false && (
-                    <Link to="/facialtest" className="card-link">
+                    <Link to="/facialtest" className="btn btn-dark mr-2">
                       Comprobaci&oacute;n facial
                     </Link>
                   )}
                   {this.state.fingerprint === false && (
-                    <Link to="/fingerprinttest" className="card-link">
-                      Comprobaci&oacute;n biom&eacute;trica
+                    <Link to="/fingerprinttest" className="btn btn-dark ml-2">
+                      Comprobaci&oacute;n dactilar
                     </Link>
                   )}
                 </div>

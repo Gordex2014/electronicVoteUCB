@@ -11,9 +11,10 @@
  **********************/
 
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
-import cato from "../images/cato.jpg";
+import cato from "../images/ucb_atrio.jpg";
 
 import ucbLogo from "../images/ucb_logo.png";
 
@@ -42,8 +43,21 @@ export default class Home extends Component {
               <h1 className="text-center mb-4 mt-4">
                 APLICACI&Oacute;N DE VOTANTES
               </h1>
-              <div align="center" className="mt-4 pt-4">
-                <img src={cato} alt="Cato" />
+            </div>
+          </div>
+          <div className="row d-flex h-100">
+            <div align="center" className="col-8 mt-4 mb-3">
+              <img src={cato} height="350px" alt="Cato" />
+            </div>
+            <div className="col-4 mt-4">
+              <div className="container h-100">
+                <div className="d-flex h-100">
+                  <div className="align-self-center mx-auto">
+                    <Link to="/login" className="btn-lg btn-dark">
+                      ¡EMITIR VOTO!
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

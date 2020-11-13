@@ -84,7 +84,7 @@ router.post("/login", (req, res) => {
         );
       } else {
         const sendToken = jwt.sign({ profile }, config.secretKey, {
-          expiresIn: "10m",
+          expiresIn: "60m",
         });
         response.success(req, res, sendToken, 200);
       }
