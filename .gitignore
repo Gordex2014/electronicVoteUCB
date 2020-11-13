@@ -1,6 +1,7 @@
 node_modules
 .env
-public
+public/*
+!public/index.html
 hosts
 .cert
 serverlogs
