@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index",
     "dev": "nodemon index",
-    "deploy": "pm2 start index.js --name electronic-voting-ucb --log /Users/alvarosalinasdockar/electronicVoteUCB/Backend/serverlogs",
+    "deploy": "pm2 start index.js --name electronic-voting-ucb --log /Users/alvarosalinasdockar/electronicVoteUCB/Backend/serverlogs.log",
     "list": "pm2 list",
     "restart": "pm2 restart index.js",
     "stop": "pm2 stop index.js",
