@@ -104,7 +104,7 @@ router.post(
   validateToken,
   registrationPeriodChecker,
   (req, res) => {
-    const { name, lastname, ci, city, location, dataUri } = req.body; //TODO: add photo and fingerprint
+    const { name, lastname, ci, city, location, dataUri } = req.body;
     const newVoter = { name, lastname, ci, city, location, dataUri };
     registerController
       .addVoter(newVoter)
@@ -128,7 +128,7 @@ router.patch(
   validateToken,
   registrationPeriodChecker,
   (req, res) => {
-    const { name, lastname, ci, city, location, oldCi } = req.body; //TODO: add fingerprint
+    const { name, lastname, ci, city, location, oldCi } = req.body;
     const modifiedVoter = { name, lastname, ci, city, location, oldCi };
     registerController
       .modifyVoter(modifiedVoter)
@@ -152,7 +152,7 @@ router.put(
   validateToken,
   registrationPeriodChecker,
   (req, res) => {
-    const { oldCi } = req.body; //TODO: add fingerprint
+    const { oldCi } = req.body;
     const oldVoter = { oldCi };
     registerController
       .deleteVoter(oldVoter)
@@ -282,7 +282,7 @@ router.post(
 
 // Inicializa los parámetros del proceso electoral
 router.post("/init", verifyToken, validateToken, async (req, res) => {
-  serverResponse = await registerController.configInit();
+  const serverResponse = await registerController.configInit();
   if (serverResponse.status === 200) {
     response.success(req, res, serverResponse.message, serverResponse.status);
   } else {
@@ -303,7 +303,7 @@ router.put(
   validateToken,
   registrationPeriodChecker,
   async (req, res) => {
-    serverResponse = await registerController.closeRegistration();
+    const serverResponse = await registerController.closeRegistration();
     if (serverResponse.status === 200) {
       response.success(req, res, serverResponse.message, serverResponse.status);
     } else {
@@ -324,7 +324,7 @@ router.put(
   verifyToken,
   validateToken,
   async (req, res) => {
-    serverResponse = await registerController.openElections();
+    const serverResponse = await registerController.openElections();
     if (serverResponse.status === 200) {
       response.success(req, res, serverResponse.message, serverResponse.status);
     } else {
@@ -346,7 +346,7 @@ router.put(
   validateToken,
   votationPeriodChecker,
   async (req, res) => {
-    serverResponse = await registerController.closeElections();
+    const serverResponse = await registerController.closeElections();
     if (serverResponse.status === 200) {
       response.success(req, res, serverResponse.message, serverResponse.status);
     } else {

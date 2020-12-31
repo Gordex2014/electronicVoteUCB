@@ -34,7 +34,7 @@ router.post("/enroll", (req, res) => {
         );
       }
       if (petitionResponse.value) {
-        response.success(req, res, `${petitionResponse.value}`); //TODO: respuesta.value a la base de datos
+        response.success(req, res, `${petitionResponse.value}`);
       }
     })
     .catch((e) => {
