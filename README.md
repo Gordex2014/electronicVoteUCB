@@ -112,7 +112,6 @@ Si bien no es estríctamente necesario utilizar un un Raspberry Pi para utilizar
 
 - [Pyfingerprint](https://github.com/bastianraschke/pyfingerprint)
 - [Flask](https://flask.palletsprojects.com/en/1.1.x/)
-- [Python-dotenv](https://github.com/theskumar/python-dotenv)
 
 Si se utiliza un segundo anfitrión para tener dos sensores de huellas dactilares funcionando, se debe modificar en el código fuente del archivo config.js o agregar una variable de entorno dentro de la carpeta Backend.
 
@@ -125,7 +124,7 @@ Agregando un nuevo sensor en un host con dirección IP 192.168.0.106:
 fingerprintClientHost:
     process.env.FINGERPRINT_CLIENT_HOST || "http://192.168.0.106:8081",
 ```
-O bien se puede agregar una variable de entorno en un archivo .env :
+O bien se puede agregar una variable de entorno en un archivo .env a crear:
 
 ```console
 FINGERPRINT_REGISTER_HOST=http://192.168.0.105:8081
@@ -170,20 +169,20 @@ AZURE_SUBSCRIPTION_KEY=a8f5f167f44f4964e6c998dee827110c
 ```
 >Nota: Las keys de Azure son solo valores referenciales para ejemplo de formato. Además puede agregarse cualquier configuración que se desee cambiar de la configuración predeterminada en config.js
 
-Posteriormente, en la carpeta Frontent/empadronador en UCB se crea un archivo .env que contenga lo siguiente:
+Posteriormente, en la carpeta Frontent/empadronador en UCB se debe crear un archivo .env que contenga lo siguiente:
 
 ```console
 PORT=3002
 REACT_APP_MASTER_SERVER_URL=http://192.168.0.120:3000
 ```
-Después, en la carpeta Frontent/votante en AUDIT PRO se crea un archivo .env que contenga lo siguiente:
+Después, en la carpeta Frontent/votante en AUDIT PRO se debe crear un archivo .env que contenga lo siguiente:
 
 ```console
 PORT=3001
 REACT_APP_MASTER_SERVER_URL=http://192.168.0.120:3000
 ```
 
-Luego, en la carpeta Frontent/auditor en UCB se crea un archivo .env que contenga lo siguiente:
+Luego, en la carpeta Frontent/auditor en UCB se debe crear un archivo .env que contenga lo siguiente:
 
 ```console
 PORT=3003
@@ -194,7 +193,7 @@ Además, es necesario copiar el contenido de la carpeta Backend/bcnetwork/chainc
 
 ## Puesta en marcha
 
-Para la puesta en marcha primero se deben seguir las instrucciones que detalladas en el archivo instrucciones.md que se ubica en la ruta Backend/bcnetwork/peer, donde se listan los scripts de utilidad que se deben ejecutar de forma secuencial para levantar los nodos de la red blockchain.
+Para la puesta en marcha primero se deben seguir las instrucciones detalladas en el archivo instrucciones.md que se ubica en la ruta Backend/bcnetwork/peer, donde se listan los scripts de utilidad que se deben ejecutar de forma secuencial para levantar los nodos de la red blockchain.
 
 Una vez se ha levantado la red, se debe iniciar el sistema, primero el servidor. En el host UCB, dentro de la carpeta Backend, se ejecuta el siguiente comando:
 
@@ -219,11 +218,11 @@ Si es la primera vez que se utiliza el programa, se debe registrar a un usuario 
 Luego, se debe inicializar el servidor de servicios de huellas dactilares, o los servidores, en caso de que existan. para esto se ingresa al Raspberry Pi por SSH o como se desee, una vez dentro de este se utiliza screen, con esto se puede hacer salir sin cortar con el proceso.
 
 ```console
-cd repo-route/FingerprintServer
+cd repository-route/FingerprintServer
 screen
 flask run
 ```
-Se sale presionando Ctrl+a+d y se cierra la sesión por SSH.
+Para salir de la terminal que corre el servicio de huellas dactilares se presiona Ctrl+a+d y posteriormente se cierra la sesión por SSH.
 
 Después se debe iniciar la aplicación de empadronador, para esto en el host UCB:
 
