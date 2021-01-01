@@ -26,29 +26,37 @@ export default class Results extends Component {
         console.log(data);
         const { body } = data;
         const { response } = body;
-        const { rojo, amarillo, azul, blanco, nulo } = response;
-        if (
-          rojo === 0 &&
-          amarillo === 0 &&
-          azul === 0 &&
-          blanco === 0 &&
-          nulo === 0
-        ) {
+        try {
+          const { rojo, amarillo, azul, blanco, nulo } = response;
+          if (
+            rojo === 0 &&
+            amarillo === 0 &&
+            azul === 0 &&
+            blanco === 0 &&
+            nulo === 0
+          ) {
+            this.setState({
+              error: true,
+              data: undefined,
+              loading: false,
+            });
+          } else {
+            this.setState({
+              error: null,
+              data: {
+                rojo,
+                amarillo,
+                azul,
+                blanco,
+                nulo,
+              },
+              loading: false,
+            });
+          }
+        } catch (error) {
           this.setState({
             error: true,
             data: undefined,
-            loading: false,
-          });
-        } else {
-          this.setState({
-            error: null,
-            data: {
-              rojo,
-              amarillo,
-              azul,
-              blanco,
-              nulo,
-            },
             loading: false,
           });
         }

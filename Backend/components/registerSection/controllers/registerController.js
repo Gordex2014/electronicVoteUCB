@@ -66,7 +66,7 @@ function addVoter(voterParams) {
   }
 
   // Ingresar la imagen como archivo al servidor
-  imageRoute = path.join(process.cwd(), `/public/votersPhotos/${ci}.jpg`);
+  let imageRoute = path.join(process.cwd(), `/public/votersPhotos/${ci}.jpg`);
   imageDataURI.outputFile(dataUri, imageRoute);
 
   // Ingreso a base de datos
@@ -221,6 +221,8 @@ function addProfile(profileParams) {
 }
 
 function authenticateProfile(profileLogin) {
+  let message, status;
+  let retObject = { message, status };
   const { username, password } = profileLogin;
   if (!username) {
     message = "No se introdujo ningun nombre de usuario";
@@ -247,6 +249,8 @@ function authenticateProfile(profileLogin) {
 }
 
 function getVoterPanel(ci) {
+  let message, status;
+  let retObject = { message, status };
   if (!ci) {
     message = "No se introdujo ningún CI";
     status = 400;
@@ -267,6 +271,8 @@ function getVoterPanel(ci) {
 }
 
 function saveFingerprint(ci, fingerprintCharacteristics) {
+  let message, status;
+  let retObject = { message, status };
   if (!ci) {
     message = "No ha llegado ningún CI";
     status = 400;
@@ -478,6 +484,7 @@ async function addNewVotersBlockchain() {
 async function voteCounting() {
   const response = await gateway.voteCounting();
   let message, status;
+  let retObject = {};
   if (response === false) {
     message = "La elección está en curso";
     status = 500;

@@ -18,23 +18,23 @@ Inicializar el entorno
 
   cd peer
   ./clean.sh
-  <!-- UCB -->
+  #### En UCB
   source set-env.sh ucb
   ./create-voting-channel.sh
   ./launch-peer.sh ucb
   ./join-voting-channel.sh ucb
-  <!-- AUDIT -->
+  #### En AUDIT
   source set-env.sh audit
   ./launch-peer.sh audit
   ./join-voting-channel.sh audit
 
 - Inicializar el chaincode
-  <!-- Esto lo hace UCB, copiar el package al otro host  -->
+  #### Esto lo hace UCB, copiar el package al otro host
   ./chaincode-package.sh
-  <!-- Esto lo hacen ambos  -->
+  #### Esto lo hacen ambos
   ./chaincode-install-appr.sh ucb
   ./chaincode-install-appr.sh audit
-  <!-- Esto lo hace UCB  -->
+  #### Esto lo hace UCB
   ./chaincode-commit.sh  
 
 - Al momento de iniciar nuevamente es necesario borrar manualmente la carpeta 'user-wallet' en la raíz de Backend y la colección config en la base de datos
