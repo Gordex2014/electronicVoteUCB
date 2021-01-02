@@ -48,8 +48,8 @@ source ./set-env.sh  nombre-organizacion <identidad predeterminado=admin>
 Ejemplo, configurar el entorno para User1 en ucb
 source ./set-env.sh   ucb   User1
 
-Kill ALL Peers without cleaning
-===============================
+Matar todos los procesos peer sin limpiar ledgers
+=================================================
 killall peer
 
 Inspeccionar organizacion activa
