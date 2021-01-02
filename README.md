@@ -213,7 +213,7 @@ Si es la primera vez que se utiliza el programa, se debe registrar a un usuario 
     "password": "foofoofoo"
 }
 ```
->Nota: Datos solo de ejemplo. El usuario y contraseña sservirán para ingresar como empadronadores.
+>Nota: Datos solo de ejemplo. El usuario y contraseña servirán para ingresar como empadronadores.
 
 Luego, se debe inicializar el servidor de servicios de huellas dactilares, o los servidores, en caso de que existan. para esto se ingresa al Raspberry Pi por SSH o como se desee, una vez dentro de este se utiliza screen, con esto se puede hacer salir sin cortar con el proceso.
 
