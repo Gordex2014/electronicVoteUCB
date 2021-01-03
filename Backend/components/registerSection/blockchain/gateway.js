@@ -40,8 +40,7 @@ async function addNewVoters(votersList) {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.submitTransaction("addNewVoters", votersList);
-    // console.log("Respuesta del blockchain =", response.toString());
+    await contract.submitTransaction("addNewVoters", votersList);
   } catch (e) {
     // Error de Timeout
     console.log(e);
@@ -61,8 +60,8 @@ async function openElection() {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.submitTransaction("openElection");
-    // console.log("Respuesta del blockchain =", response.toString());
+    await contract.submitTransaction("openElection");
+    console.log("Respuesta del blockchain =", response.toString());
   } catch (e) {
     // Error de Timeout
     console.log(e);
@@ -82,7 +81,7 @@ async function closeElection() {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.submitTransaction("closeElection");
+    await contract.submitTransaction("closeElection");
     // console.log("Respuesta del blockchain =", response.toString());
   } catch (e) {
     // Error de Timeout
@@ -103,7 +102,7 @@ async function voteEmition(voter, candidate) {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.submitTransaction(
+    await contract.submitTransaction(
       "voteEmition",
       voter,
       candidate
@@ -128,7 +127,7 @@ async function voterStatusInspection(voter) {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.evaluateTransaction(
+    await contract.evaluateTransaction(
       "voterStatusInspection",
       voter
     );
@@ -152,7 +151,7 @@ async function candidateInspection(candidate) {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.evaluateTransaction(
+    await contract.evaluateTransaction(
       "candidateInspection",
       candidate
     );
@@ -176,7 +175,7 @@ async function voteCounting() {
   // Emitir transacción
   try {
     // Transacción
-    let response = await contract.evaluateTransaction("voteCounting");
+    await contract.evaluateTransaction("voteCounting");
     let jsonResponse = JSON.parse(response)
     // console.log("Respuesta del blockchain =", response.toString());
     return jsonResponse;
