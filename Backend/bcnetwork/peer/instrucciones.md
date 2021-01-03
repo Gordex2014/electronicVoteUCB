@@ -65,7 +65,7 @@ Start the environment per the instructions above
 
    .  ./set-env.sh ucb
 
-   * Invoke para registrar votantes a la elección  // Solo debug
+   * Invoke para registrar votantes ficticios a la elección
     peer chaincode invoke -C votingchannel -n evoting  -c '{"Args":["addNewVoters","7a3ed0760e383246dbc1331439d9a8544937bbd6b430bd623940a26b884cc74b,c95723977547b78302da6328f6ef90070a448dc8f2813d28dfe836bae2fa5d56"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=192.168.0.120:7051
 
    * Invoke para abrir la elección
@@ -74,16 +74,14 @@ Start the environment per the instructions above
    * Invoke para cerrar la elección
     peer chaincode invoke -C votingchannel -n evoting  -c '{"Args":["closeElection"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=192.168.0.120:7051
 
-   * Invoke para emitir voto // Solo debug
+   * Invoke para emitir votos ficticios
     peer chaincode invoke -C votingchannel -n evoting  -c '{"Args":["voteEmition","c95723977547b78302da6328f6ef90070a448dc8f2813d28dfe836bae2fa5d56","azul"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=192.168.0.120:7051
     peer chaincode invoke -C votingchannel -n evoting  -c '{"Args":["voteEmition","7a3ed0760e383246dbc1331439d9a8544937bbd6b430bd623940a26b884cc74b","rojo"]}' -o 192.168.0.120:7050 --waitForEvent --peerAddresses=192.168.0.120:7051
 
-   * Query para el estado del votante 'c95723977547b78302da6328f6ef90070a448dc8f2813d28dfe836bae2fa5d56'
-   // Desactualizado: No incluye el salt
-   
+   * Query para ver el estado del votante 'c95723977547b78302da6328f6ef90070a448dc8f2813d28dfe836bae2fa5d56' // Solo debug
     peer chaincode query -C votingchannel -n evoting  -c '{"Args":["voterStatusInspection","c95723977547b78302da6328f6ef90070a448dc8f2813d28dfe836bae2fa5d56"]}'
 
-   * Query para el estado del candidato 'azul' 
+   * Query para el estado del candidato 'azul'  // Solo debug
     peer chaincode query -C votingchannel -n evoting  -c '{"Args":["candidateInspection","azul"]}'
 
    * Query para el conteo de votos
