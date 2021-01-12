@@ -289,4 +289,36 @@ La aplicación tiene el único fin de mostrar resultados.
 
 Este procedimiento se mostró con el fin de poder conocer el flujo normal.
 
-Para poder repetir el proceso se deben seguir los pasos en instrucciones.md dentro de Backend/bcnetwork/peer
+Para poder repetir el proceso se deben seguir los pasos en instrucciones.md dentro de Backend/bcnetwork/peer.
+
+# Arquitectura del sistema
+
+## Esquema general del proyecto
+
+<img src ="https://i.imgur.com/Koa0cav.png" title="general_scheme" width="700px">
+
+## Servidor central
+
+<img src ="https://i.imgur.com/PbcgL97.png" title="monolithic_server" width="700px">
+
+## Servicio de identificación dactilar
+
+<img src ="https://i.imgur.com/VM39bs7.png" title="fingerprint_service" width="700px">
+
+## Servicio de identificación facial
+
+<img src ="https://i.imgur.com/eke3CoS.png" title="facial_service" width="400px">
+
+## Servicio de emisión de votos
+
+<img src ="https://i.imgur.com/d3zvIpT.png" title="vote_emition_service" width="700px">
+
+## Estructuración de datos
+
+<img src ="https://i.imgur.com/Q7W05do.png" title="hash_tree_data_structure" width="400px">
+
+## Arquitectura de la red Hyperledger Fabric
+
+<img src ="https://i.imgur.com/GsceedJ.png" title="hyperledger_architecture" width="700px">
+
+
