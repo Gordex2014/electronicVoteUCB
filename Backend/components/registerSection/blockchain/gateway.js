@@ -61,7 +61,7 @@ async function openElection() {
   try {
     // Transacción
     await contract.submitTransaction("openElection");
-    console.log("Respuesta del blockchain =", response.toString());
+    // console.log("Respuesta del blockchain =", response.toString());
   } catch (e) {
     // Error de Timeout
     console.log(e);
@@ -175,8 +175,8 @@ async function voteCounting() {
   // Emitir transacción
   try {
     // Transacción
-    await contract.evaluateTransaction("voteCounting");
-    let jsonResponse = JSON.parse(response)
+    let blockchainResponse = await contract.evaluateTransaction("voteCounting");
+    let jsonResponse = JSON.parse(blockchainResponse)
     // console.log("Respuesta del blockchain =", response.toString());
     return jsonResponse;
   } catch (e) {
