@@ -321,4 +321,6 @@ Para poder repetir el proceso se deben seguir los pasos en instrucciones.md dent
 
 <img src ="https://i.imgur.com/GsceedJ.png" title="hyperledger_architecture" width="700px">
 
+## Funcionamiento del proyecto
 
+[![SISTEMA DE VOTO ELECTRÓNICO](https://img.youtube.com/vi/cHNeHumQQCQ/0.jpg)](https://www.youtube.com/watch?v=cHNeHumQQCQ)
