@@ -27,7 +27,7 @@
     "keccak": "^3.0.1",
     "mongoose": "^5.7.13",
     "morgan": "^1.9.1",
-    "socket.io": "^2.4.0",
+    "socket.io": "^2.5.0",
     "fabric-client": "^1.4.0",
     "fabric-network": "^1.4.0",
     "fs": "0.0.1-security",
